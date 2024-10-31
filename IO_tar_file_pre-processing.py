@@ -13,3 +13,4 @@ import tarfile
 io_tar_file_path = "IOMAtrices.tar.gz"
 with tarfile.open(io_tar_file_path, 'r:gz') as tar:
     tar.extractall()
+
