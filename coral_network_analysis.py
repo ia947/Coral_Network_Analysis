@@ -22,10 +22,11 @@ import tarfile
 
 ## *Make sure all adjacency matrices are in .npy or .csv before reading* ##
 
-filename = r"GBR\wind_and_tides\swain\connectivity_matrix.csv"
+filename = r"Caribbean\D_Caribbean_revised.npy"
 
 def read_adjacency_matrix(filename):
-    adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=1)
+    #adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=1)
+    adjacency_matrix = np.load(filename)
     return adjacency_matrix
 
 # Creating simple graph for the adjacency matrix
@@ -77,7 +78,60 @@ G = create_adjacency_matrix_graph(adjacency_matrix)
 draw_graph(G)
 
 
+###############################
+###### DEGREE CENTRALITY ######
+###############################
 
 
 
+##################################
+###### CLOSENESS CENTRALITY ######
+##################################
 
+
+
+####################################
+###### BETWEENNESS CENTRALITY ######
+####################################
+
+
+
+####################################
+###### EIGENVECTOR CENTRALITY ######
+####################################
+
+
+
+#################################
+###### HARMONIC CENTRALITY ######
+#################################
+
+
+
+####################################
+###### CLUSTERING COEFFICIENT ######
+####################################
+
+
+
+######################################
+###### GRAPH DENSITY (DIRECTED) ######
+######################################
+
+
+
+###################################
+###### RICH CLUB COEFFICIENT ######
+###################################
+
+
+
+##########################
+###### TRANSITIVITY ######
+##########################
+
+
+
+##############################
+###### LOCAL EFFICIENCY ######
+##############################
