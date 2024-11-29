@@ -6,76 +6,91 @@ Created on Fri Oct 25 17:39:13 2024
 """
 
 #Import initial modules
-import argparse
 import numpy as np
 import networkx as nx
 from networkx.drawing.nx_agraph import graphviz_layout
-import pandas as pd
-#import geopandas as gpd
 import matplotlib.pyplot as plt
-import os
-import tarfile
 
 #################################
 ###### DATA PRE-PROCESSING ######
 #################################
 
-## *Make sure all adjacency matrices are in .npy or .csv before reading* ##
-
+# Function to read connectivity matrix
+#filename = r"GBR\wind_and_tides\grenville\connectivity_decimal.csv"
 filename = r"Caribbean\D_Caribbean_revised.npy"
 
 def read_adjacency_matrix(filename):
-    #adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=1)
-    adjacency_matrix = np.load(filename)
+    #adjacency_matrix = np.load(filename)
+    adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=0)
     return adjacency_matrix
 
-# Creating simple graph for the adjacency matrix
+# Function to create directed graph from connectivity matrix
 def create_adjacency_matrix_graph(adjacency_matrix):
     G = nx.DiGraph()
     num_nodes = len(adjacency_matrix)
     G.add_nodes_from(range(num_nodes))
     for i in range(num_nodes):
-        for j in range(i + 1, num_nodes):
+        for j in range(num_nodes):  # Include all connections (i -> j)
             if adjacency_matrix[i][j] > 0:
-                G.add_edge(i,j)
+                G.add_edge(i, j, weight=adjacency_matrix[i][j])
     return G
 
-#################################
-###### DATA VISUALIZATION #######
-#################################
+####################################
+###### NETWORK VISUALISATION #######
+####################################
 
-def draw_graph(G, pos=None):
-    if pos is None:
-        pos = nx.spring_layout(G, seed=42, k=0.15)
-
-    # Compute degree centrality
-    eigenvector_centrality = nx.eigenvector_centrality(G, max_iter=1000)
+# Function to draw the directed graph
+def draw_graph(G, use_graphviz=False):
+    if use_graphviz:
+        try:
+            pos = graphviz_layout(G, prog='sfdp')  # Use sfdp for sprawling layout
+        except ImportError:
+            print("Graphviz is not installed. Falling back to spring_layout.")
+            pos = nx.spring_layout(G, seed=42, k=0.3, iterations=100)
+    else:
+        pos = nx.spring_layout(G, seed=42, k=0.3, iterations=100)  # Adjust k for spread
     
-    centrality_values = list(eigenvector_centrality.values())
+    # Compute degree centrality for coloring
+    degree_centrality = nx.degree_centrality(G)
+    centrality_values = list(degree_centrality.values())
     max_centrality = max(centrality_values)
     min_centrality = min(centrality_values)
     
-    # Map the centrality values to a colour scale
-    node_color = [eigenvector_centrality[node] for node in G.nodes()]
-    cmap = plt.cm.get_cmap('coolwarm')
+    # Node properties
+    fixed_node_size = 1000  # Set a fixed size for all nodes
+    node_color = [degree_centrality[node] for node in G.nodes()]
+    cmap = plt.cm.viridis  # Use a perceptually uniform colormap
     
-    node_size = [1000 * eigenvector_centrality[node] for node in G.nodes()]  # Scale node size by centrality
-    edge_color = 'gray'
-    edge_width = 1.5
-    alpha = 0.7 # Edge transparency
+    # Edge properties
+    edge_weights = nx.get_edge_attributes(G, 'weight')
+    edge_width = [0.5 + 3 * edge_weights[edge] for edge in G.edges()]  # Scale edge width by weight
     
-    # Draw graph with nodes coloured based on centrality
-    nx.draw(G, pos, with_labels=False, node_size=node_size, node_color=node_color, cmap=cmap, 
-            edge_color=edge_color, width=edge_width, alpha=alpha, font_weight='bold')
+    # Draw graph
+    plt.figure(figsize=(15, 15))
+    nx.draw(
+        G,
+        pos,
+        node_size=fixed_node_size,
+        node_color=node_color,
+        cmap=cmap,
+        edge_color='gray',
+        width=edge_width,
+        alpha=0.7,
+        arrows=True,
+        arrowsize=10
+    )
     
-    sm = plt.cm.ScalarMappable(cmap=plt.cm.plasma, norm=plt.Normalize(vmin=min_centrality, vmax=max_centrality))
+    # Add colorbar for node centrality
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=min_centrality, vmax=max_centrality))
     sm.set_array([])
-    plt.colorbar(sm, label="Eigenvector Centrality")
+    cbar = plt.colorbar(sm, fraction=0.03, pad=0.04)
+    cbar.set_label("Degree Centrality", fontsize=14)
+    
     plt.show()
 
 adjacency_matrix = read_adjacency_matrix(filename)
 G = create_adjacency_matrix_graph(adjacency_matrix)
-draw_graph(G)
+draw_graph(G, use_graphviz=True)
 
 
 ###############################
@@ -135,3 +150,5 @@ draw_graph(G)
 ##############################
 ###### LOCAL EFFICIENCY ######
 ##############################
+
+
