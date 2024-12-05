@@ -10,6 +10,7 @@ import numpy as np
 import networkx as nx
 from networkx.drawing.nx_agraph import graphviz_layout
 import matplotlib.pyplot as plt
+import pandas as pd
 
 #################################
 ###### DATA PRE-PROCESSING ######
@@ -20,8 +21,8 @@ import matplotlib.pyplot as plt
 filename = r"Caribbean\D_Caribbean_revised.npy"
 
 def read_adjacency_matrix(filename):
-    #adjacency_matrix = np.load(filename)
-    adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=0)
+    adjacency_matrix = np.load(filename)
+    #adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=0)
     return adjacency_matrix
 
 # Function to create directed graph from connectivity matrix
@@ -93,62 +94,33 @@ G = create_adjacency_matrix_graph(adjacency_matrix)
 draw_graph(G, use_graphviz=True)
 
 
-###############################
-###### DEGREE CENTRALITY ######
-###############################
-
-
-
 ##################################
-###### CLOSENESS CENTRALITY ######
+###### CENTRALITY MEASURES #######
 ##################################
 
+# Function to compute centrality measures
+def compute_centralities(G):
+    # Degree centrality
+    degree_centrality = nx.degree_centrality(G)
+    # Closeness centrality
+    closeness_centrality = nx.closeness_centrality(G)
+    # Betweenness centrality
+    betweenness_centrality = nx.betweenness_centrality(G, normalized=True)
+    # Eigenvector centrality
+    eigenvector_centrality = nx.eigenvector_centrality(G, max_iter=1000)
+    # Harmonic centrality
+    harmonic_centrality = nx.harmonic_centrality(G)
+    # Clustering coefficient
+    clustering_coefficient = nx.clustering(G.to_undirected())
 
+    return pd.DataFrame({
+        'Node': list(G.nodes),
+        'Degree Centrality': [degree_centrality[node] for node in G.nodes()],
+        'Closeness Centrality': [closeness_centrality[node] for node in G.nodes()],
+        'Betweenness Centrality': [betweenness_centrality[node] for node in G.nodes()],
+        'Eigenvector Centrality': [eigenvector_centrality[node] for node in G.nodes()],
+        'Harmonic Centrality': [harmonic_centrality[node] for node in G.nodes()],
+        'Clustering Coefficient': [clustering_coefficient[node] for node in G.nodes()]
+    })
 
-####################################
-###### BETWEENNESS CENTRALITY ######
-####################################
-
-
-
-####################################
-###### EIGENVECTOR CENTRALITY ######
-####################################
-
-
-
-#################################
-###### HARMONIC CENTRALITY ######
-#################################
-
-
-
-####################################
-###### CLUSTERING COEFFICIENT ######
-####################################
-
-
-
-######################################
-###### GRAPH DENSITY (DIRECTED) ######
-######################################
-
-
-
-###################################
-###### RICH CLUB COEFFICIENT ######
-###################################
-
-
-
-##########################
-###### TRANSITIVITY ######
-##########################
-
-
-
-##############################
-###### LOCAL EFFICIENCY ######
-##############################
-
-
+compute_centralities(G)
