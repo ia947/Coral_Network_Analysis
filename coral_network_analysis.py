@@ -11,6 +11,7 @@ import networkx as nx
 from networkx.drawing.nx_agraph import graphviz_layout
 import matplotlib.pyplot as plt
 import pandas as pd
+from netCDF4 import Dataset
 
 #################################
 ###### DATA PRE-PROCESSING ######
@@ -18,11 +19,13 @@ import pandas as pd
 
 # Function to read connectivity matrix
 #filename = r"GBR\wind_and_tides\grenville\connectivity_decimal.csv"
-filename = r"Caribbean\D_Caribbean_revised.npy"
+filename = r"IO\IO_single_step_explicit_mean_connectivity_matrix.csv"
+#filename = r"Caribbean\D_Caribbean_revised.npy"
 
 def read_adjacency_matrix(filename):
-    adjacency_matrix = np.load(filename)
-    #adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=0)
+    #adjacency_matrix = Dataset(filename, mode='r')
+    adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=0)
+    #adjacency_matrix = np.load(filename)
     return adjacency_matrix
 
 # Function to create directed graph from connectivity matrix
