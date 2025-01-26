@@ -132,3 +132,5 @@ def compute_centralities(G, output_filename):
 
 summary_stats = compute_centralities(G, 'IO_centrality_measures.csv')
 print(summary_stats)
+
+# Next to run the script for each location to produce centrality csv files for each
