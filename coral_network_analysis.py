@@ -94,7 +94,9 @@ def draw_graph(G, use_graphviz=False):
 
 adjacency_matrix = read_adjacency_matrix(filename)
 G = create_adjacency_matrix_graph(adjacency_matrix)
+
 #draw_graph(G, use_graphviz=True)
+draw_graph(G, use_graphviz=True)
 
 
 ##################################
@@ -115,8 +117,8 @@ def compute_centralities(G, output_filename):
     harmonic_centrality = nx.harmonic_centrality(G)
     # Clustering coefficient
     clustering_coefficient = nx.clustering(G.to_undirected())
-
-    centrality_df = pd.DataFrame({
+    centrality_df = pd.DataFrame()
+    return pd.DataFrame({
         'Node': list(G.nodes),
         'Degree Centrality': [degree_centrality[node] for node in G.nodes()],
         'Closeness Centrality': [closeness_centrality[node] for node in G.nodes()],
@@ -134,3 +136,5 @@ summary_stats = compute_centralities(G, 'IO_centrality_measures.csv')
 print(summary_stats)
 
 # Next to run the script for each location to produce centrality csv files for each
+
+compute_centralities(G)
