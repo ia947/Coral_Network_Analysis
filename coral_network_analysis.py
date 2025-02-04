@@ -8,6 +8,7 @@ Created on Fri Oct 25 17:39:13 2024
 #Import initial modules
 import numpy as np
 import networkx as nx
+import graphviz
 from networkx.drawing.nx_agraph import graphviz_layout
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -87,15 +88,15 @@ def draw_graph(G, use_graphviz=False):
     # Add colorbar for node centrality
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=min_centrality, vmax=max_centrality))
     sm.set_array([])
-    cbar = plt.colorbar(sm, fraction=0.03, pad=0.04)
+    cbar = plt.colorbar(sm, ax=plt.gca(), fraction=0.03, pad=0.04)
     cbar.set_label("Degree Centrality", fontsize=14)
     
     plt.show()
 
+
 adjacency_matrix = read_adjacency_matrix(filename)
 G = create_adjacency_matrix_graph(adjacency_matrix)
 
-#draw_graph(G, use_graphviz=True)
 draw_graph(G, use_graphviz=True)
 
 
@@ -117,8 +118,9 @@ def compute_centralities(G, output_filename):
     harmonic_centrality = nx.harmonic_centrality(G)
     # Clustering coefficient
     clustering_coefficient = nx.clustering(G.to_undirected())
-    centrality_df = pd.DataFrame()
-    return pd.DataFrame({
+    
+    # Create the DataFrame
+    centrality_df = pd.DataFrame({
         'Node': list(G.nodes),
         'Degree Centrality': [degree_centrality[node] for node in G.nodes()],
         'Closeness Centrality': [closeness_centrality[node] for node in G.nodes()],
@@ -129,14 +131,25 @@ def compute_centralities(G, output_filename):
     })
     
     # Write centrality dataframe as CSV
-    centrality_df.to_csv(output_filename, index=False)
+    try:
+        centrality_df.to_csv(output_filename, index=False)
+        print(f"CSV saved to {output_filename}")
+    except Exception as e:
+        print(f"Error saving CSV: {e}")
+    
     return centrality_df
 
-#summary_stats = compute_centralities(G, 'GBR_wind-and-tides_Grenville_centrality_measures.csv')
-#summary_stats = compute_centralities(G, 'IO_centrality_measures.csv')
-summary_stats = compute_centralities(G, 'Caribbean_centrality_measures.csv')
+# Absolute path to save CSV in a specific location
+output_filename = r'C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data\Caribbean_centrality_measures.csv'
+
+# Run centrality computation and save to CSV
+summary_stats = compute_centralities(G, output_filename)
+
+# Print the resulting summary statistics (just to check)
 print(summary_stats)
+
 
 # Next to run the script for each location to produce centrality csv files for each
 
-compute_centralities(G)
+compute_centralities(G, 'Caribbean_centrality_measures.csv')
+
