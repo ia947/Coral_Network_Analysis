@@ -19,14 +19,14 @@ from netCDF4 import Dataset
 #################################
 
 # Function to read connectivity matrix
-#filename = r"GBR\wind_and_tides\grenville\connectivity_decimal.csv"
+filename = r"GBR\tides_only\cairns\connectivity_decimal.csv"
 #filename = r"IO\IO_single_step_explicit_mean_connectivity_matrix.csv"
-filename = r"Caribbean\D_Caribbean_revised.npy"
+#filename = r"Caribbean\D_Caribbean_revised.npy"
 
 def read_adjacency_matrix(filename):
     #adjacency_matrix = Dataset(filename, mode='r')
-    #adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=0)
-    adjacency_matrix = np.load(filename)
+    adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=0)
+    #adjacency_matrix = np.load(filename)
     return adjacency_matrix
 
 # Function to create directed graph from connectivity matrix
@@ -140,7 +140,7 @@ def compute_centralities(G, output_filename):
     return centrality_df
 
 # Absolute path to save CSV in a specific location
-output_filename = r'C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data\Caribbean_centrality_measures.csv'
+output_filename = r'C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data\GBR_tides-only_Cairns_centrality_measures.csv'
 
 # Run centrality computation and save to CSV
 summary_stats = compute_centralities(G, output_filename)
@@ -151,5 +151,5 @@ print(summary_stats)
 
 # Next to run the script for each location to produce centrality csv files for each
 
-compute_centralities(G, 'Caribbean_centrality_measures.csv')
+compute_centralities(G, 'GBR_tides-only_Cairns_centrality_measures.csv')
 
