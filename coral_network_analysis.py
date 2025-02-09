@@ -105,18 +105,12 @@ draw_graph(G, use_graphviz=True)
 ##################################
 
 # Function to compute centrality measures
-def compute_centralities(G, output_filename):
-    # Degree centrality
+def compute_centralities(G, centrality_output_filename):
     degree_centrality = nx.degree_centrality(G)
-    # Closeness centrality
     closeness_centrality = nx.closeness_centrality(G)
-    # Betweenness centrality
     betweenness_centrality = nx.betweenness_centrality(G, normalized=True)
-    # Eigenvector centrality
     eigenvector_centrality = nx.eigenvector_centrality(G, max_iter=1000)
-    # Harmonic centrality
     harmonic_centrality = nx.harmonic_centrality(G)
-    # Clustering coefficient
     clustering_coefficient = nx.clustering(G.to_undirected())
     
     # Create the DataFrame
@@ -132,18 +126,18 @@ def compute_centralities(G, output_filename):
     
     # Write centrality dataframe as CSV
     try:
-        centrality_df.to_csv(output_filename, index=False)
-        print(f"CSV saved to {output_filename}")
+        centrality_df.to_csv(centrality_output_filename, index=False)
+        print(f"CSV saved to {centrality_output_filename}")
     except Exception as e:
         print(f"Error saving CSV: {e}")
     
     return centrality_df
 
 # Absolute path to save CSV in a specific location
-output_filename = r'C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data\GBR_tides-only_Cairns_centrality_measures.csv'
+centrality_output_filename = r'C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data\GBR_tides-only_Cairns_centrality_measures.csv'
 
 # Run centrality computation and save to CSV
-summary_stats = compute_centralities(G, output_filename)
+summary_stats = compute_centralities(G, centrality_output_filename)
 
 # Print the resulting summary statistics (just to check)
 print(summary_stats)
@@ -152,4 +146,41 @@ print(summary_stats)
 # Next to run the script for each location to produce centrality csv files for each
 
 compute_centralities(G, 'GBR_tides-only_Cairns_centrality_measures.csv')
+
+
+###############################
+###### DENSITY MEASURES #######
+###############################
+
+# Function to compute other graph and density measures
+def compute_densities(G, density_output_filename):
+    density = nx.density(G)
+    rich_club_coefficient = nx.rich_club_coefficient(G, normalized=True)
+    transitivity = nx.transitivity(G)
+    local_efficiency = nx.global_efficiency(G.to_undirected())
+    
+    # Compute network centralisation
+    degree_centrality = nx.degree_centrality(G)
+    max_centrality = max(degree_centrality.values())
+    N = len(G)
+    network_centralisation = (sum(max_centrality - c for c in degree_centrality.values()) / ((N - 1) * (N - 2))) if N > 2 else 0
+    
+    density_df = pd.DataFrame({
+        'Node': list(G.nodes),
+        'Graph Density': [density[node] for node in G.nodes()],
+        'Rich Club Coefficient': [rich_club_coefficient[node] for node in G.nodes()],
+        'Transitivity': [transitivity[node] for node in G.nodes()],
+        'Local Efficiency': [local_efficiency[node] for node in G.nodes()],
+        'Network Centralisation': [network_centralisation[node] for node in G.nodes()]
+        })
+    
+    # Write to csv
+    try:
+        density_df.to_csv(density_output_filename, index=False)
+        print(f"CSV saved to {density_output_filename}")
+    except Exception as e:
+        print(f"Error saving CSV: {e}")
+        
+    return density_df
+    
 
