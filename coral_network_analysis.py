@@ -130,6 +130,7 @@ def compute_network_metrics(G, output_filename):
     metrics_df = pd.DataFrame({
         'Node': list(G.nodes),
         'Degree Centrality': [degree_centrality[node] for node in G.nodes()],
+        'Network Centralisation': [network_centralisation[node] for node in G.nodes()],
         'Closeness Centrality': [closeness_centrality[node] for node in G.nodes()],
         'Betweenness Centrality': [betweenness_centrality[node] for node in G.nodes()],
         'Eigenvector Centrality': [eigenvector_centrality[node] for node in G.nodes()],
@@ -138,8 +139,7 @@ def compute_network_metrics(G, output_filename):
         'Graph Density': [density[node] for node in G.nodes()],
         'Rich Club Coefficient': [rich_club_coefficient[node] for node in G.nodes()],
         'Transitivity': [transitivity[node] for node in G.nodes()],
-        'Local Efficiency': [local_efficiency[node] for node in G.nodes()],
-        'Network Centralisation': [network_centralisation[node] for node in G.nodes()]
+        'Local Efficiency': [local_efficiency[node] for node in G.nodes()]
     })
     
     # Write centrality dataframe as CSV
