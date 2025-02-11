@@ -24,7 +24,7 @@ filename = r"GBR\tides_only\cairns\connectivity_decimal.csv"
 #filename = r"Caribbean\D_Caribbean_revised.npy"
 
 def read_adjacency_matrix(filename):
-    #adjacency_matrix = Dataset(filename, mode='r')
+   #adjacency_matrix = Dataset(filename, mode='r')
     adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=0)
     #adjacency_matrix = np.load(filename)
     return adjacency_matrix
@@ -116,7 +116,7 @@ def compute_network_metrics(G, output_filename):
     
     # Graph-level measures
     density = nx.density(G)
-    rich_club_coefficient = nx.rich_club_coefficient(G, normalized=True)
+    rich_club_coefficient = nx.rich_club_coefficient(G.to_undirected(), normalized=True)
     transitivity = nx.transitivity(G)
     local_efficiency = nx.global_efficiency(G.to_undirected())
     
@@ -157,7 +157,7 @@ def compute_network_metrics(G, output_filename):
 ##############################################
 
 # Absolute path to save CSV in a specific location
-output_filename = r'C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data\GBR_tides-only_Cairns_centrality_measures.csv'
+output_filename = r'C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data\GBR_tides-only_Cairns_network_metrics.csv'
 
 # Run analysis
 adjacency_matrix = read_adjacency_matrix(filename)
