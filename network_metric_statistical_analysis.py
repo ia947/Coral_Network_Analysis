@@ -16,6 +16,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 
+
 ############################################
 ###### LOAD CSV FILES FOR EACH REGION ######
 ############################################
@@ -56,6 +57,7 @@ df_all = pd.concat(dataframes.values(), ignore_index=True)
 
 # Display basic information
 print(df_all.head())
+
 
 ###############################
 ###### NORMALITY TESTING ######
