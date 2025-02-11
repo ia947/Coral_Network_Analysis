@@ -116,7 +116,11 @@ def compute_network_metrics(G, output_filename):
     
     # Graph-level measures
     density = nx.density(G)
-    rich_club_coefficient = nx.rich_club_coefficient(G.to_undirected(), normalized=True)
+    
+    G_no_selfloops = G.copy()  # Create copy of the graph
+    G_no_selfloops.remove_edges_from(nx.selfloop_edges(G_no_selfloops))  # Remove self-loops
+    rich_club_coefficient = nx.rich_club_coefficient(G_no_selfloops.to_undirected(), normalized=True)
+    
     transitivity = nx.transitivity(G)
     local_efficiency = nx.global_efficiency(G.to_undirected())
     
