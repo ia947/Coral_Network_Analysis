@@ -100,11 +100,11 @@ G = create_adjacency_matrix_graph(adjacency_matrix)
 draw_graph(G, use_graphviz=True)
 
 
-##################################
-###### CENTRALITY MEASURES #######
-##################################
+###############################
+###### NETWORK MEASURES #######
+###############################
 
-# Function to compute centrality measures
+# Function to compute all network measures
 def compute_network_metrics(G, output_filename):
     # Centrality measures
     degree_centrality = nx.degree_centrality(G)
@@ -151,19 +151,24 @@ def compute_network_metrics(G, output_filename):
     
     return metrics_df
 
+
+##############################################
+####### EXECUTE SCRIPT FOR ALL REGIONS #######
+##############################################
+
 # Absolute path to save CSV in a specific location
 output_filename = r'C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data\GBR_tides-only_Cairns_centrality_measures.csv'
 
-# Run centrality computation and save to CSV
-summary_stats = compute_network_metrics(G, output_filename)
+# Run analysis
+adjacency_matrix = read_adjacency_matrix(filename)
+G = create_adjacency_matrix_graph(adjacency_matrix)
+draw_graph(G, use_graphviz=True)
+metrics_df = compute_network_metrics(G, output_filename)
 
-# Print the resulting summary statistics (just to check)
-print(summary_stats)
-
+# Print summary statistics
+print(metrics_df.head())
 
 # Next to run the script for each location to produce centrality csv files for each
-
-compute_network_metrics(G, 'GBR_tides-only_Cairns_centrality_measures.csv')
 
 
 
