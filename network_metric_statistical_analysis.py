@@ -57,3 +57,20 @@ df_all = pd.concat(dataframes.values(), ignore_index=True)
 # Display basic information
 print(df_all.head())
 
+###############################
+###### NORMALITY TESTING ######
+###############################
+
+metrics = ["Degree Centrality", "Network Centralisation", "Closeness Centrality", "Betweenness Centrality",
+           "Eigenvector Centrality", "Harmonic Centrality", "Clustering Coefficient", "Graph Density",
+           "Rich Club Coefficient", "Transitivity", "Local Efficiency"]
+
+for metric in metrics:
+    print(f"\nShapiro-Wilk test for normality - {metric}:")
+    for region in dataframes.keys():
+        stat, p = stats.shapiro(df_all[df_all["Region"] == region][metric])
+        print(f"{region}: W={stat:.3f}, p={p:.3f}")
+        if p < 0.05:
+            print(f"    {metric} is **not normally distributed** in {region}")
+        else:
+            print(f"    {metric} is normally distributed in {region}")
