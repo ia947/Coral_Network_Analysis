@@ -119,7 +119,10 @@ def compute_network_metrics(G, output_filename):
     
     G_no_selfloops = G.copy()  # Create copy of the graph
     G_no_selfloops.remove_edges_from(nx.selfloop_edges(G_no_selfloops))  # Remove self-loops
-    rich_club_coefficient = nx.rich_club_coefficient(G_no_selfloops.to_undirected(), normalized=True)
+    if G_no_selfloops.number_of_edges() > 0:  # Ensure the graph has edges
+        rich_club_coefficient = nx.rich_club_coefficient(G_no_selfloops.to_undirected(), normalized=False)
+    else:
+        rich_club_coefficient = {}  # Assign empty dictionary if no valid calculation is possible
     
     transitivity = nx.transitivity(G)
     local_efficiency = nx.global_efficiency(G.to_undirected())
@@ -134,14 +137,14 @@ def compute_network_metrics(G, output_filename):
     metrics_df = pd.DataFrame({
         'Node': list(G.nodes),
         'Degree Centrality': [degree_centrality[node] for node in G.nodes()],
-        'Network Centralisation': [network_centralisation[node] for node in G.nodes()],
+        'Network Centralisation': [network_centralisation] * len(G.nodes()),
         'Closeness Centrality': [closeness_centrality[node] for node in G.nodes()],
         'Betweenness Centrality': [betweenness_centrality[node] for node in G.nodes()],
         'Eigenvector Centrality': [eigenvector_centrality[node] for node in G.nodes()],
         'Harmonic Centrality': [harmonic_centrality[node] for node in G.nodes()],
         'Clustering Coefficient': [clustering_coefficient[node] for node in G.nodes()],
-        'Graph Density': [density[node] for node in G.nodes()],
-        'Rich Club Coefficient': [rich_club_coefficient[node] for node in G.nodes()],
+        'Graph Density': [density] * len(G.nodes()),
+        'Rich Club Coefficient': [rich_club_coefficient] * len(G.nodes()),
         'Transitivity': [transitivity[node] for node in G.nodes()],
         'Local Efficiency': [local_efficiency[node] for node in G.nodes()]
     })
