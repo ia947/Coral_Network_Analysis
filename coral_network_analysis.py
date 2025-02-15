@@ -35,11 +35,6 @@ locations = {
     "Caribbean": os.path.join("Caribbean", "D_Caribbean_revised.npy")
     }
 
-# Function to read connectivity matrix
-#filename = r"GBR\tides_only\cairns\connectivity_decimal.csv"
-#filename = r"IO\IO_single_step_explicit_mean_connectivity_matrix.csv"
-#filename = r"Caribbean\D_Caribbean_revised.npy"
-
 def read_adjacency_matrix(filename):
     if filename.endswith(".csv"):
         return np.genfromtxt(filename, delimiter=',', skip_header=0)
@@ -47,11 +42,6 @@ def read_adjacency_matrix(filename):
         return np.load(filename)
     else:
         raise ValueError(f"Unsupported file format: {filename}")
-    
-   #adjacency_matrix = Dataset(filename, mode='r')
-    #adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=0)
-    #adjacency_matrix = np.load(filename)
-    #return adjacency_matrix
 
 # Function to create directed graph from connectivity matrix
 def create_adjacency_matrix_graph(adjacency_matrix):
@@ -118,18 +108,12 @@ def draw_graph(G, use_graphviz=False):
     plt.show()
 
 
-adjacency_matrix = read_adjacency_matrix(filename)
-G = create_adjacency_matrix_graph(adjacency_matrix)
-
-draw_graph(G, use_graphviz=True)
-
-
 ###############################
 ###### NETWORK MEASURES #######
 ###############################
 
 # Function to compute all network measures
-def compute_network_metrics(G, output_filename):
+def compute_network_metrics(G, region_name):
     # Centrality measures
     degree_centrality = nx.degree_centrality(G)
     closeness_centrality = nx.closeness_centrality(G)
@@ -173,14 +157,22 @@ def compute_network_metrics(G, output_filename):
         'Local Efficiency': [local_efficiency] * len(G.nodes())
     })
     
-    # Write centrality dataframe as CSV
-    try:
-        metrics_df.to_csv(output_filename, index=False)
-        print(f"CSV saved to {output_filename}")
-    except Exception as e:
-        print(f"Error saving CSV: {e}")
+    # Save results to csv
+    output_filename = f"{region_name}_network_metrics.csv"
+    metrics_df.to_csv(output_filename, index=False)
+    print(f"Metrics for {region_name} saved to {output_filename}")
     
     return metrics_df
+    
+    
+    
+    # Write centrality dataframe as CSV
+    #try:
+    #    metrics_df.to_csv(output_filename, index=False)
+    #    print(f"CSV saved to {output_filename}")
+    #except Exception as e:
+    #    print(f"Error saving CSV: {e}")
+    
 
 
 ##############################################
