@@ -53,7 +53,11 @@ for region, df in dataframes.items():
         df["Region"] = "Caribbean"
         df["Condition"] = "Caribbean"
 
+# Combine all data into a single df
 df_all = pd.concat(dataframes.values(), ignore_index=True)
+
+# Drop rows with missing values
+df_all.dropna(inplace=True)
 
 # Display basic information
 print(df_all.head())
