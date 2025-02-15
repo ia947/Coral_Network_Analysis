@@ -9,7 +9,7 @@ import os
 import pandas as pd
 import numpy as np
 import scipy.stats as stats
-#import seaborn as sns
+import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
@@ -24,21 +24,21 @@ from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 # Set file paths
 base_path = r"C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data"
 
-# Map all GBR csv files
-GBR_files = [f for f in os.listdir(base_path) if f.startswith("GBR_") and f.endswith("_centrality_measures.csv")]
+# Find all GBR network metric CSV files
+GBR_files = [f for f in os.listdir(base_path) if f.startswith("GBR_") and f.endswith("_network_metrics.csv")]
 
-# Create dictionary with the proper keys
-IO_and_C_centrality_measures_files = {
-    "IO": os.path.join(base_path, "IO_centrality_measures.csv"),
-    "Caribbean": os.path.join(base_path, "Caribbean_centrality_measures.csv"),
-    }
+# Create dictionary of file paths
+network_metrics_files = {
+    "IO": os.path.join(base_path, "IO_network_metrics.csv"),
+    "Caribbean": os.path.join(base_path, "Caribbean_network_metrics.csv"),
+}
 
 for file in GBR_files:
-    key = file.replace("_centrality_measures.csv", "") # To remove the file suffix
-    IO_and_C_centrality_measures_files[key] = os.path.join(base_path, file)
-    
-# Load all data into dictionary
-dataframes = {region: pd.read_csv(file) for region, file in IO_and_C_centrality_measures_files.items()}
+    key = file.replace("_network_metrics.csv", "")  # Remove file suffix
+    network_metrics_files[key] = os.path.join(base_path, file)
+
+# Load data into dictionary
+dataframes = {region: pd.read_csv(file) for region, file in network_metrics_files.items()}
 
 # Then add a region identifier to each dataframe
 for region, df in dataframes.items():
