@@ -36,15 +36,22 @@ locations = {
     }
 
 # Function to read connectivity matrix
-filename = r"GBR\tides_only\cairns\connectivity_decimal.csv"
+#filename = r"GBR\tides_only\cairns\connectivity_decimal.csv"
 #filename = r"IO\IO_single_step_explicit_mean_connectivity_matrix.csv"
 #filename = r"Caribbean\D_Caribbean_revised.npy"
 
 def read_adjacency_matrix(filename):
+    if filename.endswith(".csv"):
+        return np.genfromtxt(filename, delimiter=',', skip_header=0)
+    elif filename.endswith(".npy"):
+        return np.load(filename)
+    else:
+        raise ValueError(f"Unsupported file format: {filename}")
+    
    #adjacency_matrix = Dataset(filename, mode='r')
-    adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=0)
+    #adjacency_matrix = np.genfromtxt(filename, delimiter=',', skip_header=0)
     #adjacency_matrix = np.load(filename)
-    return adjacency_matrix
+    #return adjacency_matrix
 
 # Function to create directed graph from connectivity matrix
 def create_adjacency_matrix_graph(adjacency_matrix):
