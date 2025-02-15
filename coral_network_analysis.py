@@ -180,18 +180,29 @@ def compute_network_metrics(G, region_name):
 ##############################################
 
 # Absolute path to save CSV in a specific location
-output_filename = r'C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data\GBR_tides-only_Cairns_network_metrics.csv'
+#output_filename = r'C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data\GBR_tides-only_Cairns_network_metrics.csv'
 
 # Run analysis
-adjacency_matrix = read_adjacency_matrix(filename)
-G = create_adjacency_matrix_graph(adjacency_matrix)
-draw_graph(G, use_graphviz=True)
-metrics_df = compute_network_metrics(G, output_filename)
+#adjacency_matrix = read_adjacency_matrix(filename)
+#G = create_adjacency_matrix_graph(adjacency_matrix)
+#draw_graph(G, use_graphviz=True)
+#metrics_df = compute_network_metrics(G, output_filename)
 
 # Print summary statistics
-print(metrics_df.head())
+#print(metrics_df.head())
 
-# Next to run the script for each location to produce centrality csv files for each
 
+for region, filename in locations.items():
+    print(f"Processing {region}...")
+    
+    # Read and process the adjacency matrix
+    adjacency_matrix = read_adjacency_matrix(filename)
+    G = create_adjacency_matrix_graph(adjacency_matrix)
+    
+    # Visualise the graph
+    draw_graph(G, use_graphviz=True)
+    
+    # Compute and save the network metrics
+    compute_network_metrics(G, region)
 
 
