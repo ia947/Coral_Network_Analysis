@@ -5,7 +5,8 @@ Created on Fri Oct 25 17:39:13 2024
 @author: isaac
 """
 
-#Import initial modules
+
+import os
 import numpy as np
 import networkx as nx
 import graphviz
@@ -14,9 +15,25 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from netCDF4 import Dataset
 
+
 #################################
 ###### DATA PRE-PROCESSING ######
 #################################
+
+# Define locations for corresponding adjacency matrix filenames
+locations = {
+    "IO": os.path.join("IO", "IO_single_step_explicit_mean_connectivity_matrix.csv"),
+    "GBR_tides-only_Cairns": os.path.join("GBR", "tides_only", "cairns", "connectivity_decimal.csv"),
+    "GBR_tides-only_Grenville": os.path.join("GBR", "tides_only", "grenville", "connectivity_decimal.csv"),
+    "GBR_tides-only_Swain": os.path.join("GBR", "tides_only", "swain", "connectivity_decimal.csv"),
+    "GBR_wind-and-tides_Cairns": os.path.join("GBR", "wind_and_tides", "cairns", "connectivity_decimal.csv"),
+    "GBR_wind-and-tides_Grenville": os.path.join("GBR", "wind_and_tides", "grenville", "connectivity_decimal.csv"),
+    "GBR_wind-and-tides_Swain": os.path.join("GBR", "wind_and_tides", "swain", "connectivity_decimal.csv"),
+    "GBR_wind-only_Cairns": os.path.join("GBR", "wind_only", "cairns", "connectivity_decimal.csv"),
+    "GBR_wind-only_Grenville": os.path.join("GBR", "wind_only", "grenville", "connectivity_decimal.csv"),
+    "GBR_wind-only_Swain": os.path.join("GBR", "wind_only", "swain", "connectivity_decimal.csv"),
+    "Caribbean": os.path.join("Caribbean", "D_Caribbean_revised.npy")
+    }
 
 # Function to read connectivity matrix
 filename = r"GBR\tides_only\cairns\connectivity_decimal.csv"
