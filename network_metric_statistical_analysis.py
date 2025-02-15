@@ -67,15 +67,33 @@ print(df_all.head())
 ###### NORMALITY TESTING ######
 ###############################
 
-metrics = ["Degree Centrality", "Network Centralisation", "Closeness Centrality", "Betweenness Centrality",
-           "Eigenvector Centrality", "Harmonic Centrality", "Clustering Coefficient", "Graph Density",
-           "Rich Club Coefficient", "Transitivity", "Local Efficiency"]
+metrics = [
+    "Degree Centrality", "Network Centralisation", "Closeness Centrality", "Betweenness Centrality",
+    "Eigenvector Centrality", "Harmonic Centrality", "Clustering Coefficient", "Graph Density",
+    "Rich Club Coefficient", "Transitivity", "Local Efficiency"
+    ]
+
+normality_results = {}
 
 for metric in metrics:
-    print(f"\nShapiro-Wilk test for normality - {metric}:")
+    print(f"\nNormality test for {metric}:")
+    
+    normality_results[metric] = {}
+    
     for region in dataframes.keys():
-        stat, p = stats.shapiro(df_all[df_all["Region"] == region][metric])
-        print(f"{region}: W={stat:.3f}, p={p:.3f}")
+        data = df_all[df_all["Region"] == region][metric]
+        
+        # Select normality test based on sample size
+        if len(data) > 500:
+            stat, p = stats.kstest(data, 'norm')
+            test_used = "Kolmogorov-Smirnov"
+        else:
+            stat, p = stats.shapiro(data)
+            test_used = "Shapiro-Wilk"
+            
+        normality_results[metric][region] = p
+        
+        print(f"{region}: {test_used} test - W={stat:.3f}, p={p:.3f}")
         if p < 0.05:
             print(f"    {metric} is **not normally distributed** in {region}")
         else:
