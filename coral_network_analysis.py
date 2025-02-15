@@ -163,34 +163,11 @@ def compute_network_metrics(G, region_name):
     print(f"Metrics for {region_name} saved to {output_filename}")
     
     return metrics_df
-    
-    
-    
-    # Write centrality dataframe as CSV
-    #try:
-    #    metrics_df.to_csv(output_filename, index=False)
-    #    print(f"CSV saved to {output_filename}")
-    #except Exception as e:
-    #    print(f"Error saving CSV: {e}")
-    
 
 
 ##############################################
 ####### EXECUTE SCRIPT FOR ALL REGIONS #######
 ##############################################
-
-# Absolute path to save CSV in a specific location
-#output_filename = r'C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data\GBR_tides-only_Cairns_network_metrics.csv'
-
-# Run analysis
-#adjacency_matrix = read_adjacency_matrix(filename)
-#G = create_adjacency_matrix_graph(adjacency_matrix)
-#draw_graph(G, use_graphviz=True)
-#metrics_df = compute_network_metrics(G, output_filename)
-
-# Print summary statistics
-#print(metrics_df.head())
-
 
 for region, filename in locations.items():
     print(f"Processing {region}...")
