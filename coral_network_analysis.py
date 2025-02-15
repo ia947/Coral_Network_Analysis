@@ -145,8 +145,8 @@ def compute_network_metrics(G, output_filename):
         'Clustering Coefficient': [clustering_coefficient[node] for node in G.nodes()],
         'Graph Density': [density] * len(G.nodes()),
         'Rich Club Coefficient': [rich_club_coefficient] * len(G.nodes()),
-        'Transitivity': [transitivity[node] for node in G.nodes()],
-        'Local Efficiency': [local_efficiency[node] for node in G.nodes()]
+        'Transitivity': [transitivity] * len(G.nodes()),
+        'Local Efficiency': [local_efficiency] * len(G.nodes())
     })
     
     # Write centrality dataframe as CSV
