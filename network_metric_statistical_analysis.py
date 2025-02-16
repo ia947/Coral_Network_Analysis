@@ -144,3 +144,20 @@ for metric in metrics:
             print(f"    **{metric} is NOT normally distributed** in {region}")
         else:
             print(f"    {metric} is normally distributed in {region}")
+
+
+###############################################
+###### ANOVA / KRUSKAL-WALLIS TESTING #########
+###############################################
+
+
+
+
+
+
+
+
+
+
+
+
