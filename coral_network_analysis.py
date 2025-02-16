@@ -160,7 +160,7 @@ def compute_network_metrics(G, region_name):
     
     # Save results to csv
     output_filename = f"{region_name}_network_metrics.csv"
-    metrics_df.to_csv(output_filename, index=False)
+    metrics_df.to_csv(output_filename, index=False, mode="w")
     print(f"Metrics for {region_name} saved to {output_filename}")
     
     return metrics_df
