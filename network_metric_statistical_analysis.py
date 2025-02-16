@@ -235,3 +235,45 @@ ANOVA_KruskallWallis_df.to_csv(r"ANOVA_KruskallWallis_results.csv", index=False)
 ##########################################
 ###### PRINCIPAL COMPONENT ANALYSIS ######
 ##########################################
+
+# Standardise results for PCA
+metrics_data = df_all[metrics].dropna()
+scaler = StandardScaler()
+scaled_data = scaler.fit_transform(metrics_data)
+
+# Perform PCA
+pca = PCA()
+pca.fit(scaled_data)
+
+# Visualise explained variance
+plt.figure(figsize=(10, 6))
+plt.plot(range(1, len(metrics) + 1), pca.explained_variance_ratio_, marker='o', linestyle='--')
+plt.title('PCA Explained Variance')
+plt.xlabel('Principal Component')
+plt.ylabel('Variance Ratio')
+plt.show()
+
+# Biplot
+components = pca.components_
+plt.figure(figsize=(10, 6))
+sns.heatmap(components, cmap='coolwarm', xticklabels=metrics, yticklabels=[f"PC{i+1}" for i in range(len(components))])
+
+plt.title('PCA Loadings')
+plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels to 45 degrees for readability
+plt.yticks(rotation=0)
+plt.tight_layout()
+plt.show()
+
+# Extract principal components
+pca_data = pca.transform(scaled_data)
+df_pca = pd.DataFrame(pca_data, columns=[f"PC{i+1}" for i in range(len(pca_data[0]))])
+
+# Add region info to PCA data
+df_pca["Region"] = df_all["Region"]
+
+# Get the loadings for PC1 (first row of pca.components_)
+pc1_loadings = pca.components_[0]
+
+# Create a DataFrame to show the loadings of each metric for PC1 --> adjust for other PCs if necessary
+pc1_loadings_df = pd.DataFrame(pc1_loadings, index=metrics, columns=['PC1'])
+print(pc1_loadings_df)
