@@ -92,13 +92,11 @@ if missing_metrics:
 # Drop rows with missing values
 df_all.dropna(subset=metrics, inplace=True)
 
-normality_results = {}
+normality_results = []
 
 for metric in metrics:
     print(f"\nNormality test for {metric}:\n" + "-" * 40)
-
-    normality_results[metric] = {}
-
+    
     for region in dataframes.keys():
         data = df_all[df_all["Region"] == region][metric].dropna()
         
@@ -136,26 +134,75 @@ for metric in metrics:
         else:
             stat, p = stats.shapiro(data)
             test_used = "Shapiro-Wilk"
-
-        normality_results[metric][region] = p
-
+            
+        # Store results in normality_results list
+        normality_results.append({
+            "Metric": metric,
+            "Region": region,
+            "Test": test_used,
+            "Statistic": stat,
+            "p-value": p,
+            "Normally Distributed": "Yes" if p >= 0.05 else "No"
+            })
+        
         print(f"{region}: {test_used} test - W={stat:.3f}, p={p:.3f}")
         if p < 0.05:
             print(f"    **{metric} is NOT normally distributed** in {region}")
         else:
             print(f"    {metric} is normally distributed in {region}")
 
+# Convert results list into df and save to csv
+normality_df = pd.DataFrame(normality_results)
+normality_df.to_csv(r"normality_test_results.csv")
 
 ###############################################
 ###### ANOVA / KRUSKAL-WALLIS TESTING #########
 ###############################################
 
+# Define testable metrics for comparison
+comparison_metrics = ["Network Centralisation", "Graph Density", "Degree Centrality"]
 
+# Perform one-way ANOVA or Kruskal-Wallis depending on normality
+for metric in comparison_metrics:
+    print(f"\nComparing {metric} between regions:")
+    
+    # Group data by region
+    data_by_region = [df_all[df_all["Region"] == region][metric].dropna() for region in dataframes.keys()]
+    
+    # Check normality of the metric in each region
+    normal_regions = [
+        region for region in dataframes.keys() 
+        if any(result['Metric'] == metric and result['Region'] == region and result['p-value'] >= 0.05 for result in normality_results)
+    ]
+    non_normal_regions = [
+        region for region in dataframes.keys() 
+        if any(result['Metric'] == metric and result['Region'] == region and result['p-value'] < 0.05 for result in normality_results)
+    ]
+    
+    if all(region in normal_regions for region in dataframes.keys()):
+        # All regions are normal, apply ANOVA
+        stat, p = stats.f_oneway(*data_by_region)
+        test_used = "ANOVA"
+    else:
+        # At least one region is non-normal, apply Kruskal-Wallis
+        stat, p = stats.kruskal(*data_by_region)
+        test_used = "Kruskal-Wallis"
+    
+    print(f"{test_used} test: statistic={stat:.3f}, p={p:.3f}")
+    if p < 0.05:
+        print(f"    Significant difference found in {metric}")
+    else:
+        print(f"    No significant difference found in {metric}")
 
-
-
-
-
+    # If significant, perform post-hoc test (e.g., Tukey's HSD)
+    if p < 0.05:
+        # For ANOVA
+        if test_used == "ANOVA":
+            from statsmodels.stats.multicomp import pairwise_tukeyhsd
+            all_data = pd.concat([df_all[["Region", metric]] for df_all in dataframes.values()])
+            tukey_result = pairwise_tukeyhsd(all_data[metric], all_data["Region"])
+            print("\nPost-hoc Tukey's HSD results:")
+            print(tukey_result.summary())
 
 
 

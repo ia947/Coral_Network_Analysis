@@ -1,0 +1,96 @@
+,Metric,Region,Test,Statistic,p-value,Normally Distributed
+0,Degree Centrality,Caribbean,Shapiro-Wilk,0.9562786994125163,7.031861739105212e-10,No
+1,Degree Centrality,GBR_tides-only_Cairns,Shapiro-Wilk,0.9369333994395774,0.0006077114710514072,No
+2,Degree Centrality,GBR_tides-only_Grenville,Kolmogorov-Smirnov,0.131515307621342,2.8052792601668487e-10,No
+3,Degree Centrality,GBR_tides-only_Swain,Kolmogorov-Smirnov,0.21938438985972408,1.8545192519123598e-25,No
+4,Degree Centrality,GBR_wind-and-tides_Cairns,Shapiro-Wilk,0.695725062299045,1.147894876064729e-11,No
+5,Degree Centrality,GBR_wind-and-tides_Grenville,Kolmogorov-Smirnov,0.17178867067763115,2.8721243962849345e-17,No
+6,Degree Centrality,GBR_wind-and-tides_Swain,Kolmogorov-Smirnov,0.237330729852122,9.015843805584836e-30,No
+7,Degree Centrality,GBR_wind-only_Cairns,Shapiro-Wilk,0.7536741979538599,2.444825347197229e-10,No
+8,Degree Centrality,GBR_wind-only_Grenville,Kolmogorov-Smirnov,0.19590361706007392,2.297284437460953e-22,No
+9,Degree Centrality,GBR_wind-only_Swain,Kolmogorov-Smirnov,0.19936134252293997,4.611097349651354e-21,No
+10,Degree Centrality,IO,Shapiro-Wilk,0.7342889119942103,1.0862089499813639e-16,No
+11,Network Centralisation,GBR_tides-only_Cairns,Shapiro-Wilk,1.0,1.0,Yes
+12,Network Centralisation,GBR_wind-only_Grenville,Kolmogorov-Smirnov,0.8411587578098669,0.0,No
+13,Network Centralisation,IO,Shapiro-Wilk,1.0,1.0,Yes
+14,Closeness Centrality,Caribbean,Shapiro-Wilk,0.9709707084251948,1.9094686983763167e-07,No
+15,Closeness Centrality,GBR_tides-only_Cairns,Shapiro-Wilk,0.8682658289848888,6.163412871561011e-07,No
+16,Closeness Centrality,GBR_tides-only_Grenville,Kolmogorov-Smirnov,0.21480945540366914,7.604302322657265e-27,No
+17,Closeness Centrality,GBR_tides-only_Swain,Kolmogorov-Smirnov,0.29314643702163934,1.715328510151451e-45,No
+18,Closeness Centrality,GBR_wind-and-tides_Cairns,Shapiro-Wilk,0.6478288694062279,1.2227664008402796e-12,No
+19,Closeness Centrality,GBR_wind-and-tides_Grenville,Kolmogorov-Smirnov,0.2595959718102414,3.4659249538370553e-39,No
+20,Closeness Centrality,GBR_wind-and-tides_Swain,Kolmogorov-Smirnov,0.278123088450834,6.516871735057226e-41,No
+21,Closeness Centrality,GBR_wind-only_Cairns,Shapiro-Wilk,0.6601059306029174,2.1253641199742975e-12,No
+22,Closeness Centrality,GBR_wind-only_Grenville,Kolmogorov-Smirnov,0.28676750182845195,6.965433548301217e-48,No
+23,Closeness Centrality,GBR_wind-only_Swain,Kolmogorov-Smirnov,0.2221833051009488,4.1580695288021857e-26,No
+24,Closeness Centrality,IO,Shapiro-Wilk,0.7388146588863469,1.505994057007053e-16,No
+25,Betweenness Centrality,Caribbean,Shapiro-Wilk,0.5171156196402698,2.336218788728886e-32,No
+26,Betweenness Centrality,GBR_tides-only_Cairns,Shapiro-Wilk,0.5388881194930331,1.511291417447156e-14,No
+27,Betweenness Centrality,GBR_tides-only_Grenville,Kolmogorov-Smirnov,0.36784474585367416,1.670755335375873e-79,No
+28,Betweenness Centrality,GBR_tides-only_Swain,Kolmogorov-Smirnov,0.3748189964823436,4.571174042034035e-75,No
+29,Betweenness Centrality,GBR_wind-and-tides_Cairns,Shapiro-Wilk,0.30169788807508136,8.90058324878384e-18,No
+30,Betweenness Centrality,GBR_wind-and-tides_Grenville,Kolmogorov-Smirnov,0.38178521661920795,7.846733115980885e-86,No
+31,Betweenness Centrality,GBR_wind-and-tides_Swain,Kolmogorov-Smirnov,0.39287999787472466,1.0216922605227075e-82,No
+32,Betweenness Centrality,GBR_wind-only_Cairns,Shapiro-Wilk,0.3132733600928347,1.2200178774434375e-17,No
+33,Betweenness Centrality,GBR_wind-only_Grenville,Kolmogorov-Smirnov,0.38675749986426805,3.730896262931965e-88,No
+34,Betweenness Centrality,GBR_wind-only_Swain,Kolmogorov-Smirnov,0.3652382479001298,3.553603617131354e-71,No
+35,Betweenness Centrality,IO,Shapiro-Wilk,0.9417812582711721,1.0808894109792434e-06,No
+36,Eigenvector Centrality,Caribbean,Shapiro-Wilk,0.8394223244963956,2.636232593254704e-20,No
+37,Eigenvector Centrality,GBR_tides-only_Cairns,Shapiro-Wilk,0.3548358822015324,3.915317820403661e-17,No
+38,Eigenvector Centrality,GBR_tides-only_Grenville,Kolmogorov-Smirnov,0.4492541810711301,2.085229507992223e-120,No
+39,Eigenvector Centrality,GBR_tides-only_Swain,Kolmogorov-Smirnov,0.3931875968554907,7.505813993875204e-83,No
+40,Eigenvector Centrality,GBR_wind-and-tides_Cairns,Shapiro-Wilk,0.39356400804908953,1.2217217039749984e-16,No
+41,Eigenvector Centrality,GBR_wind-and-tides_Grenville,Kolmogorov-Smirnov,0.48627611623149697,2.5063315236810015e-142,No
+42,Eigenvector Centrality,GBR_wind-and-tides_Swain,Kolmogorov-Smirnov,0.41981138687796327,6.531745603856581e-95,No
+43,Eigenvector Centrality,GBR_wind-only_Cairns,Shapiro-Wilk,0.0928087416877027,5.372916419913537e-20,No
+44,Eigenvector Centrality,GBR_wind-only_Grenville,Kolmogorov-Smirnov,0.47388666841939264,9.526792435460757e-135,No
+45,Eigenvector Centrality,GBR_wind-only_Swain,Kolmogorov-Smirnov,0.5225881116453623,9.014567510748447e-151,No
+46,Eigenvector Centrality,IO,Shapiro-Wilk,0.6676655951205375,1.3405403400208444e-18,No
+47,Harmonic Centrality,Caribbean,Shapiro-Wilk,0.9766457819998737,2.571951718073722e-06,No
+48,Harmonic Centrality,GBR_tides-only_Cairns,Shapiro-Wilk,0.8518307766283796,1.627113756738909e-07,No
+49,Harmonic Centrality,GBR_tides-only_Grenville,Kolmogorov-Smirnov,0.22813401318192095,2.918102300238067e-30,No
+50,Harmonic Centrality,GBR_tides-only_Swain,Kolmogorov-Smirnov,0.3012829777342261,4.4158834009360076e-48,No
+51,Harmonic Centrality,GBR_wind-and-tides_Cairns,Shapiro-Wilk,0.6319128758263695,6.090411644959169e-13,No
+52,Harmonic Centrality,GBR_wind-and-tides_Grenville,Kolmogorov-Smirnov,0.2745481605223545,7.392158547622874e-44,No
+53,Harmonic Centrality,GBR_wind-and-tides_Swain,Kolmogorov-Smirnov,0.28233038483861805,3.61137681800412e-42,No
+54,Harmonic Centrality,GBR_wind-only_Cairns,Shapiro-Wilk,0.6341475051042522,6.707872347213094e-13,No
+55,Harmonic Centrality,GBR_wind-only_Grenville,Kolmogorov-Smirnov,0.2809938783124074,5.87019818643038e-46,No
+56,Harmonic Centrality,GBR_wind-only_Swain,Kolmogorov-Smirnov,0.2327071932487657,1.2596034647169957e-28,No
+57,Harmonic Centrality,IO,Shapiro-Wilk,0.6879227409718984,4.733172469680057e-18,No
+58,Clustering Coefficient,Caribbean,Shapiro-Wilk,0.9472570109215663,3.9556218006792514e-11,No
+59,Clustering Coefficient,GBR_tides-only_Cairns,Shapiro-Wilk,0.3891369210560811,1.0698289962390447e-16,No
+60,Clustering Coefficient,GBR_tides-only_Grenville,Kolmogorov-Smirnov,0.32960276141189326,1.6561460899527184e-63,No
+61,Clustering Coefficient,GBR_tides-only_Swain,Kolmogorov-Smirnov,0.34242945492032806,2.2611325336593882e-62,No
+62,Clustering Coefficient,GBR_wind-and-tides_Cairns,Shapiro-Wilk,0.5091814393271025,5.201009316078661e-15,No
+63,Clustering Coefficient,GBR_wind-and-tides_Grenville,Kolmogorov-Smirnov,0.35176700899800334,1.5443967209170332e-72,No
+64,Clustering Coefficient,GBR_wind-and-tides_Swain,Kolmogorov-Smirnov,0.4695148047622502,5.299940198854824e-120,No
+65,Clustering Coefficient,GBR_wind-only_Cairns,Shapiro-Wilk,0.35587878580175036,4.034435082435914e-17,No
+66,Clustering Coefficient,GBR_wind-only_Grenville,Kolmogorov-Smirnov,0.4013461018261863,3.582833763933589e-95,No
+67,Clustering Coefficient,GBR_wind-only_Swain,Kolmogorov-Smirnov,0.4440528386004459,1.0177806786166857e-106,No
+68,Clustering Coefficient,IO,Shapiro-Wilk,0.825359795117891,2.057874550877003e-13,No
+69,Graph Density,Caribbean,Shapiro-Wilk,1.0,1.0,Yes
+70,Graph Density,GBR_tides-only_Grenville,Kolmogorov-Smirnov,0.8411587578098669,0.0,No
+71,Graph Density,GBR_tides-only_Swain,Kolmogorov-Smirnov,0.8411398597649496,0.0,No
+72,Graph Density,GBR_wind-and-tides_Grenville,Kolmogorov-Smirnov,0.8411587578098669,0.0,No
+73,Graph Density,GBR_wind-only_Cairns,Shapiro-Wilk,1.0,1.0,Yes
+74,Graph Density,GBR_wind-only_Swain,Kolmogorov-Smirnov,0.8411398597649496,0.0,No
+75,Graph Density,IO,Shapiro-Wilk,1.0,1.0,Yes
+76,Rich Club Coefficient,Caribbean,Shapiro-Wilk,1.0,1.0,Yes
+77,Rich Club Coefficient,GBR_wind-and-tides_Cairns,Shapiro-Wilk,1.0,1.0,Yes
+78,Rich Club Coefficient,GBR_wind-and-tides_Grenville,Kolmogorov-Smirnov,0.8411587578098669,0.0,No
+79,Rich Club Coefficient,GBR_wind-only_Cairns,Shapiro-Wilk,1.0,1.0,Yes
+80,Rich Club Coefficient,GBR_wind-only_Grenville,Kolmogorov-Smirnov,0.8411587578098669,0.0,No
+81,Rich Club Coefficient,GBR_wind-only_Swain,Kolmogorov-Smirnov,0.8411398597649496,0.0,No
+82,Rich Club Coefficient,IO,Shapiro-Wilk,1.0,1.0,Yes
+83,Transitivity,Caribbean,Shapiro-Wilk,1.0,1.0,Yes
+84,Transitivity,GBR_tides-only_Grenville,Kolmogorov-Smirnov,0.8411587578098669,0.0,No
+85,Transitivity,GBR_wind-and-tides_Cairns,Shapiro-Wilk,1.0,1.0,Yes
+86,Transitivity,GBR_wind-and-tides_Swain,Kolmogorov-Smirnov,0.8411398597649496,0.0,No
+87,Transitivity,GBR_wind-only_Swain,Kolmogorov-Smirnov,0.8411398597649496,0.0,No
+88,Transitivity,IO,Shapiro-Wilk,1.0,1.0,Yes
+89,Local Efficiency,Caribbean,Shapiro-Wilk,1.0,1.0,Yes
+90,Local Efficiency,GBR_tides-only_Swain,Kolmogorov-Smirnov,0.8411398597649496,0.0,No
+91,Local Efficiency,GBR_wind-and-tides_Grenville,Kolmogorov-Smirnov,0.8411587578098669,0.0,No
+92,Local Efficiency,GBR_wind-and-tides_Swain,Kolmogorov-Smirnov,0.8411398597649496,0.0,No
+93,Local Efficiency,GBR_wind-only_Cairns,Shapiro-Wilk,1.0,1.0,Yes
+94,Local Efficiency,GBR_wind-only_Grenville,Kolmogorov-Smirnov,0.8411587578098669,0.0,No
