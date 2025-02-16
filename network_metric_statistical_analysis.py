@@ -15,6 +15,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
+import ast
 
 
 ############################################
@@ -100,7 +101,7 @@ for metric in metrics:
 
     for region in dataframes.keys():
         data = df_all[df_all["Region"] == region][metric].dropna()
-
+        
         if len(data) == 0:
             print(f"Skipping {region} for {metric} due to missing data.")
             continue
@@ -111,7 +112,7 @@ for metric in metrics:
         # Handle dictionary-like strings if present
         if isinstance(data.iloc[0], str) and data.iloc[0].startswith('{'):
             data = data.apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
-
+        
         # Remove rows with NaN values after conversion
         data = data.dropna()
 

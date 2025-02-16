@@ -129,8 +129,9 @@ def compute_network_metrics(G, region_name):
     G_no_selfloops.remove_edges_from(nx.selfloop_edges(G_no_selfloops))  # Remove self-loops
     if G_no_selfloops.number_of_edges() > 0:  # Ensure the graph has edges
         rich_club_coefficient = nx.rich_club_coefficient(G_no_selfloops.to_undirected(), normalized=False)
+        avg_rich_club = np.mean(list(rich_club_coefficient.values()))
     else:
-        rich_club_coefficient = {}  # Assign empty dictionary if no valid calculation is possible
+        avg_rich_club = 0  # If no valid calculation, default to 0
     
     transitivity = nx.transitivity(G)
     local_efficiency = nx.global_efficiency(G.to_undirected())
@@ -152,7 +153,7 @@ def compute_network_metrics(G, region_name):
         'Harmonic Centrality': [harmonic_centrality[node] for node in G.nodes()],
         'Clustering Coefficient': [clustering_coefficient[node] for node in G.nodes()],
         'Graph Density': [density] * len(G.nodes()),
-        'Rich Club Coefficient': [rich_club_coefficient] * len(G.nodes()),
+        'Rich Club Coefficient': [avg_rich_club] * len(G.nodes()),
         'Transitivity': [transitivity] * len(G.nodes()),
         'Local Efficiency': [local_efficiency] * len(G.nodes())
     })
