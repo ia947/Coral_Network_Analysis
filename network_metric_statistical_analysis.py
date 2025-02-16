@@ -61,7 +61,7 @@ for region, df in dataframes.items():
 # Add region identifiers
 for region, df in dataframes.items():
     if "GBR" in region:
-        df["Region"] = "GBR"
+        df["Region"] = region
         df["Condition"] = region.replace("GBR_", "")  # Extract condition
     else:
         df["Region"] = region  # IO or Caribbean
@@ -82,7 +82,7 @@ metrics = [
     "Degree Centrality", "Network Centralisation", "Closeness Centrality", "Betweenness Centrality",
     "Eigenvector Centrality", "Harmonic Centrality", "Clustering Coefficient", "Graph Density",
     "Rich Club Coefficient", "Transitivity", "Local Efficiency"
-]
+    ]
 
 # Check if all expected metrics exist
 missing_metrics = [col for col in metrics if col not in df_all.columns]
