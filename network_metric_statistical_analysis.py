@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 import ast
 
@@ -277,3 +278,43 @@ pc1_loadings = pca.components_[0]
 # Create a DataFrame to show the loadings of each metric for PC1 --> adjust for other PCs if necessary
 pc1_loadings_df = pd.DataFrame(pc1_loadings, index=metrics, columns=['PC1'])
 print(pc1_loadings_df)
+
+
+#######################################################################
+###### HIERARCHICAL CLUSTERING (W. SILHOUETTE AND ELBOW METHODS) ######
+#######################################################################
+
+# Elbow Method
+wcss = []  # List to store within-cluster sum of squares (WCSS) for each k
+for k in range(2, 11):  # Check for k from 2 to 10 clusters
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    kmeans.fit(scaled_data)
+    wcss.append(kmeans.inertia_)
+
+# Plot the elbow curve
+plt.figure(figsize=(8, 6))
+plt.plot(range(2, 11), wcss, marker='o', linestyle='--')
+plt.title('Elbow Method for Optimal Number of Clusters')
+plt.xlabel('Number of Clusters')
+plt.ylabel('WCSS')
+plt.show()
+
+# Silhouette Method
+sil_scores = []  # List to store silhouette scores for each k
+for k in range(2, 11):  # Check for k from 2 to 10 clusters
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    cluster_labels = kmeans.fit_predict(scaled_data)
+    sil_score = silhouette_score(scaled_data, cluster_labels)
+    sil_scores.append(sil_score)
+
+# Plot the silhouette scores
+plt.figure(figsize=(8, 6))
+plt.plot(range(2, 11), sil_scores, marker='o', linestyle='--')
+plt.title('Silhouette Scores for Optimal Number of Clusters')
+plt.xlabel('Number of Clusters')
+plt.ylabel('Silhouette Score')
+plt.show()
+
+
+
+
