@@ -1,4 +1,4 @@
 Metric,Test,Statistic,p-value,Significant difference
-Network Centralisation,Kruskal-Wallis,4571,0,Yes
-Graph Density,Kruskal-Wallis,4571,0,Yes
-Degree Centrality,Kruskal-Wallis,1827.689965,0,Yes
+Network Centralisation,Kruskal-Wallis,4570.999999999998,0.0,Yes
+Graph Density,Kruskal-Wallis,4570.999999999998,0.0,Yes
+Degree Centrality,Kruskal-Wallis,1827.6899648148858,0.0,Yes
