@@ -74,9 +74,9 @@ df_all = pd.concat(dataframes.values(), ignore_index=True)
 if df_all.empty:
     raise ValueError("Merged dataset is empty. Verify CSV files.")
 
-##################################
-###### NORMALITY TESTING #########
-##################################
+###############################
+###### NORMALITY TESTING ######
+###############################
 
 metrics = [
     "Degree Centrality", "Network Centralisation", "Closeness Centrality", "Betweenness Centrality",
@@ -155,12 +155,14 @@ for metric in metrics:
 normality_df = pd.DataFrame(normality_results)
 normality_df.to_csv(r"normality_test_results.csv")
 
-###############################################
-###### ANOVA / KRUSKAL-WALLIS TESTING #########
-###############################################
+############################################
+###### ANOVA / KRUSKAL-WALLIS TESTING ######
+############################################
 
 # Define testable metrics for comparison
 comparison_metrics = ["Network Centralisation", "Graph Density", "Degree Centrality"]
+
+ANOVA_KruskallWallis_results = []
 
 # Perform one-way ANOVA or Kruskal-Wallis depending on normality
 for metric in comparison_metrics:
@@ -193,6 +195,15 @@ for metric in comparison_metrics:
         print(f"    Significant difference found in {metric}")
     else:
         print(f"    No significant difference found in {metric}")
+        
+    # Store ANOVA/Kruskall-Wallis results
+    ANOVA_KruskallWallis_results.append({
+        "Metric": metric,
+        "Test": test_used,
+        "Statistic": stat,
+        "p-value": p,
+        "Significant difference": "Yes" if p < 0.05 else "No"
+        })
 
     # If significant, perform post-hoc test (e.g., Tukey's HSD)
     if p < 0.05:
@@ -203,8 +214,24 @@ for metric in comparison_metrics:
             tukey_result = pairwise_tukeyhsd(all_data[metric], all_data["Region"])
             print("\nPost-hoc Tukey's HSD results:")
             print(tukey_result.summary())
+            
+            # Store Tukey's HSD results
+            tukey_results = tukey_result.summary().data
+            for row in tukey_results[1:]:
+                ANOVA_KruskallWallis_results.append({
+                    "Metric": metric,
+                    "Test": "Tukey's HSD",
+                    "Pairwise Comparison": f"{row[0]} vs {row[1]}",
+                    "Statistic": row[2],
+                    "p-value": row[3],
+                    "Significant difference": "Yes" if row[3] < 0.05 else "No"
+                    })
+
+# Convert results list into df and save to csv
+ANOVA_KruskallWallis_df = pd.DataFrame(ANOVA_KruskallWallis_results)
+ANOVA_KruskallWallis_df.to_csv(r"ANOVA_KruskallWallis_results.csv", index=False)
 
 
-
-
-
+##########################################
+###### PRINCIPAL COMPONENT ANALYSIS ######
+##########################################
