@@ -325,7 +325,7 @@ reduced_data = pca.fit_transform(scaled_data)
 linkage_matrix = linkage(reduced_data, method='ward')
 
 # Assign clusters
-num_clusters = 5  # Adjust as needed
+num_clusters = 3  # Adjust as needed
 cluster_labels = fcluster(linkage_matrix, t=num_clusters, criterion='maxclust')
 
 # Define distinct colors for each cluster
