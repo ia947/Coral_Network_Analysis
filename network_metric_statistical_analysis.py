@@ -16,6 +16,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
+import plotly.figure_factory as ff
 import ast
 
 
@@ -315,6 +316,36 @@ plt.xlabel('Number of Clusters')
 plt.ylabel('Silhouette Score')
 plt.show()
 
+# Hierarchical Clustering in Principal Component space due to high dimensionality
+# Use PC1 and PC2 --> 2 dimensions
+pca = PCA(n_components=2)
+reduced_data = pca.fit_transform(scaled_data)
 
+# Perform hierarchical clustering
+linkage_matrix = linkage(reduced_data, method='ward')
 
+# Assign clusters
+num_clusters = 5  # Adjust as needed
+cluster_labels = fcluster(linkage_matrix, t=num_clusters, criterion='maxclust')
 
+# Define distinct colors for each cluster
+palette = sns.color_palette("tab10", num_clusters)  # Uses discrete colors
+colors = [palette[label - 1] for label in cluster_labels]
+
+# Plot the clusters in PCA space
+plt.figure(figsize=(8, 6))
+scatter = plt.scatter(reduced_data[:, 0], reduced_data[:, 1], c=colors, edgecolors='k')
+
+# Create a legend for clusters
+handles = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=palette[i], markersize=8, label=f'Cluster {i+1}') 
+           for i in range(num_clusters)]
+plt.legend(handles=handles, title="Clusters")
+
+# Labels and title
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+plt.title("Hierarchical Clustering in PCA Space")
+plt.show()
+
+# Add cluster labels to the dataframe
+df_all['Cluster'] = cluster_labels
