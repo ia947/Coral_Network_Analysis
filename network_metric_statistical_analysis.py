@@ -157,6 +157,7 @@ for metric in metrics:
 normality_df = pd.DataFrame(normality_results)
 normality_df.to_csv(r"normality_test_results.csv")
 
+
 ############################################
 ###### ANOVA / KRUSKAL-WALLIS TESTING ######
 ############################################
@@ -358,7 +359,7 @@ df_all['Cluster'] = cluster_labels
 # Calculate correlation matrix for metrics
 correlation_matrix = df_all[metrics].corr(method='pearson')
 sns.heatmap(correlation_matrix, annot=True, cmap='viridis', linewidths=0.5, vmin=0, vmax=1)
-plt.title('Correlation Matrix of Network Metrics')
+plt.title('Pearson Correlation Matrix of Network Metrics')
 plt.xticks(rotation=45, ha='right')
 plt.show()
 
