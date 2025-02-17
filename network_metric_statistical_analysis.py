@@ -120,6 +120,11 @@ for metric in metrics:
         if data.empty:
             print(f"Skipping {region} for {metric} (no valid data after conversion).")
             continue
+        
+        # Compute mean and standard deviation
+        mean_value = data.mean()
+        std_dev = data.std()
+        print(f"{region} - {metric}: Mean = {mean_value:.3f}, Std Dev = {std_dev:.3f}")
 
         # Standardisation
         std_dev = data.std()
@@ -144,7 +149,9 @@ for metric in metrics:
             "Test": test_used,
             "Statistic": stat,
             "p-value": p,
-            "Normally Distributed": "Yes" if p >= 0.05 else "No"
+            "Normally Distributed": "Yes" if p >= 0.05 else "No",
+            "Mean": mean_value,
+            "Std Dev": std_dev
             })
         
         print(f"{region}: {test_used} test - W={stat:.3f}, p={p:.3f}")
@@ -152,6 +159,26 @@ for metric in metrics:
             print(f"    **{metric} is NOT normally distributed** in {region}")
         else:
             print(f"    {metric} is normally distributed in {region}")
+            
+        # Plot the distribution of each metric in each region
+        plt.figure(figsize=(8, 5))
+        sns.histplot(data, kde=True, bins=30, stat="density", label=f"{region} - {metric}")
+
+        # Overlay normal distribution curve
+        xmin, xmax = plt.xlim()
+        x = np.linspace(xmin, xmax, 100)
+        p = stats.norm.pdf(x, mean_value, std_dev)
+        plt.plot(x, p, 'r', label="Normal Distribution")
+
+        plt.title(f"Distribution of {metric} in {region}")
+        plt.xlabel(metric)
+        plt.ylabel("Density")
+        plt.legend()
+        plt.grid()
+
+        # Save the plot
+        plt.savefig(f"distribution_{metric}_{region}.png")
+        plt.close()
 
 # Convert results list into df and save to csv
 normality_df = pd.DataFrame(normality_results)
