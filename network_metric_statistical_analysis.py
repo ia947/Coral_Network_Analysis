@@ -349,3 +349,23 @@ plt.show()
 
 # Add cluster labels to the dataframe
 df_all['Cluster'] = cluster_labels
+
+
+##########################################
+###### PEARSON/SPEARMAN CORRELATION ######
+##########################################
+
+# Calculate correlation matrix for metrics
+correlation_matrix = df_all[metrics].corr(method='pearson')
+sns.heatmap(correlation_matrix, annot=True, cmap='viridis', linewidths=0.5, vmin=0, vmax=1)
+plt.title('Correlation Matrix of Network Metrics')
+plt.xticks(rotation=45, ha='right')
+plt.show()
+
+# For non-parametric correlation (Spearman)
+correlation_matrix_spearman = df_all[metrics].corr(method='spearman')
+sns.heatmap(correlation_matrix_spearman, annot=True, cmap='viridis', linewidths=0.5, vmin=0, vmax=1)
+plt.title('Spearman Correlation Matrix of Network Metrics')
+plt.xticks(rotation=45, ha='right')
+plt.show()
+
