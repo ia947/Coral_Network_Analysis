@@ -1,5 +1,5 @@
 # Coral Network Analysis
-this repository contains scripts for network analysis of coral reef connectivity, as part of my BSc Environmental Geography dissertation at the University of York.
+This repository contains scripts for network analysis of coral reef connectivity, as part of my BSc Environmental Geography dissertation at the University of York.
 
 ## **Overview**
 Coral reef ecosystems are crucial biodiversity hotspots, and their connectivity plays a key role in their resilience and conservation. This study compares network structures of coral reefs in three regions:
