@@ -27,12 +27,12 @@ Using 'NetworkX', the following metrics are calculated:
 - **Degree Centrality**: Importance of a reef based on direct connections.
 - **Network Centralisation**: Overall reliance of the network on individual nodes.
 - **Closeness Centrality**: The higher the value, the closer it is to all other nodes.
-- **Betweenness Centrality**:
-- **Eigenvector Centrality**:
-* Harmonic Centrality
-* Clustering Coefficient
-* Graph Density
-* Rich Club Coefficient
-* Transitivity
-* Local Efficiency
+- **Betweenness Centrality**: Measures the influence a node has on controlling connections to other nodes.
+- **Eigenvector Centrality**: Importance of a node based on its connection to other important nodes.
+- **Harmonic Centrality**: Sum of the inverse of all shortest paths to other nodes.
+- **Clustering Coefficient**: Shows how connected a node's immediate neighbours are.
+- **Graph Density**: Ratio of the number of edges to the maximum possible number of edges.
+- **Rich Club Coefficient**: Measures the tendency of well-connected nodes to connect with other well-connected nodes.
+- **Transitivity**: How likely that adjacent nodes in a network are connected.
+- **Local Efficiency**: Assesses the interconnectivity of a node's immediate neighbours, indicating local robustness.
 
