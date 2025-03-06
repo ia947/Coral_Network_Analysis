@@ -40,3 +40,30 @@ Using 'NetworkX', the following metrics are calculated:
 - **NetworkX** for graph analysis
 - **NumPy** and **Pandas** for data handling
 - **Matplotlib** and **Seaborn** for data visualisation
+
+## **Repository Structure**
+This repository is organised as follows:
+```plaintext
+Code and Data/  
+│── Caribbean/                 # Data and analysis specific to the Caribbean reefs  
+│── Coral_Network_Analysis/    # Main directory for network analysis scripts  
+│── Data/                      # Raw and processed datasets  
+│── GBR/                       # Data and analysis specific to the Great Barrier Reef  
+│── IO/                        # Data and analysis specific to the Indian Ocean  
+│── Metric Distributions and Statistical Analysis/  # Statistical outputs and metric distributions  
+│── Network Graph Outputs/     # Visualisation outputs for network analysis  
+│── Scripts/                   # Python scripts for analysis  
+│── README.md                  # Project documentation  
+```  
+
+### **Folder Descriptions**  
+- **`Caribbean/`** – Contains data and analysis results for the Caribbean region.  
+- **`Coral_Network_Analysis/`** – Main directory for network analysis scripts and related files.  
+- **`Data/`** – Stores raw and processed datasets used for connectivity analysis.  
+- **`GBR/`** – Contains data and analysis specific to the Great Barrier Reef region.  
+- **`IO/`** – Contains data and analysis specific to the Indian Ocean region.  
+- **`Metric Distributions and Statistical Analysis/`** – Outputs from statistical analysis of network metrics.  
+- **`Network Graph Outputs/`** – Contains visual representations of coral network structures.  
+- **`Scripts/`** – Python scripts for running connectivity analysis and statistical computations.  
+- **`README.md`** – Project documentation.  
+
