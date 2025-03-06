@@ -22,7 +22,7 @@ A **graph-theoretic approach** is employed to analyse connectivity, where:
 
 **Data sources:** Connectivity matrices were generated from biophysical Lagrangian Particle Tracking (LPT) models.
 
-### **Key Metrics Computed in 'coral_network_analysis.py'**
+### **Key Metrics Computed in `coral_network_analysis.py`**
 Using 'NetworkX', the following metrics are calculated:
 - **Degree Centrality**: Importance of a reef based on direct connections.
 - **Network Centralisation**: Overall reliance of the network on individual nodes.
@@ -35,6 +35,14 @@ Using 'NetworkX', the following metrics are calculated:
 - **Rich Club Coefficient**: Measures the tendency of well-connected nodes to connect with other well-connected nodes.
 - **Transitivity**: How likely that adjacent nodes in a network are connected.
 - **Local Efficiency**: Assesses the interconnectivity of a node's immediate neighbours, indicating local robustness.
+
+### **Statistical Tests Performed in `network_metric_statistical_analysis.py`**
+- **Normality Testing**: Shapiro-Wilk (for sample sizes ≤ 500) and Kolmogorov-Smirnov (for larger samples).
+- **Comparative Analysis**: ANOVA or Kruskal-Wallis testing to determine the differences in regional distributions.
+- **Tukey's HSD**: Following ANOVA/Kruskal-Wallis if significant differences are found, for pairwise comparisons.
+- **Principal Component Analysis (PCA)**: To reduce dimensionality and highlight key components explaining data variance.
+- **Hierarchical Clustering**: Including the **Elbow Method** and **Silhouette Score** on PCA-reduced data to group metrics by their explained variance.
+- **Pearson/Spearman Correlation**: To assess linear/monotonic relationships between all metrics.
 
 ### **Python Libraries Used**
 - **NetworkX** for graph analysis
