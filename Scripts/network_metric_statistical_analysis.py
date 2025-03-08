@@ -27,35 +27,63 @@ import ast
 # Set base directory
 base_path = r"C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hons) Environmental Geography\3rd Year (2024-2025)\Dissertation\Code and Data"
 
+# Expected regions
+expected_regions = ["GBR", "Caribbean", "IO"]
+expected_conditions = ["tides-only", "wind-and-tides", "wind-only"]
+
 # Initialise file paths dictionary
 network_metrics_files = {}
 
 # Traverse subdirectories to find network metrics CSVs
-for root, dirs, files in os.walk(base_path):
+for root, _, files in os.walk(base_path):
     for file in files:
         if file.endswith("_network_metrics.csv"):
             file_path = os.path.join(root, file)
-
-            if "GBR" in root:
-                key = "GBR"
-            elif "Caribbean" in root:
-                key = "Caribbean"
-            elif "IO" in root:
-                key = "IO"
-            else:
-                continue  # Ignore files in unexpected directories
             
+            # Identify region
+            region = None
+            for reg in expected_regions:
+                if reg in file:
+                    region = reg
+                    break
+
+            if not region:
+                continue  # Skip files that don't belong to a known region
+
+            # Identify condition
+            condition = None
+            for cond in expected_conditions:
+                if cond in file:
+                    condition = cond
+                    break
+
+            # Identify GBR subregion (if applicable)
+            subregion = None
+            if region == "GBR":
+                for sub in ["Cairns", "Grenville", "Swain"]:
+                    if sub in file:
+                        subregion = sub
+                        break
+
+            # Construct key
+            if condition and subregion:
+                key = f"{region}_{condition}_{subregion}"
+            elif condition:
+                key = f"{region}_{condition}"
+            else:
+                key = region  # Fallback key if no condition found
+
+            # Store in dictionary
             network_metrics_files[key] = file_path
 
-# Check if all expected regions are found
-expected_regions = ["IO", "Caribbean", "GBR"]
-missing_regions = [region for region in expected_regions if region not in network_metrics_files]
+# Check if all expected regions have at least one file
+missing_regions = [region for region in expected_regions if not any(region in key for key in network_metrics_files)]
 
 if missing_regions:
     raise FileNotFoundError(f"Missing network metrics files for: {missing_regions}")
 
 # Load data into dictionary
-dataframes = {region: pd.read_csv(file) for region, file in network_metrics_files.items()}
+dataframes = {key: pd.read_csv(file) for key, file in network_metrics_files.items()}
 
 # Ensure DataFrames are not empty
 for region, df in dataframes.items():
