@@ -30,23 +30,25 @@ base_path = r"C:\Users\isaac\SynologyDrive\Documents\University of York\BSc (Hon
 # Initialise file paths dictionary
 network_metrics_files = {}
 
-# Detect and add GBR network metric files
-for file in os.listdir(base_path):
-    if file.endswith("_network_metrics.csv"):
-        file_path = os.path.join(base_path, file)
+# Traverse subdirectories to find network metrics CSVs
+for root, dirs, files in os.walk(base_path):
+    for file in files:
+        if file.endswith("_network_metrics.csv"):
+            file_path = os.path.join(root, file)
 
-        if file.startswith("GBR_"):  
-            key = file.replace("_network_metrics.csv", "")  # Remove suffix
-            network_metrics_files[key] = file_path  # Store with original name
-
-        elif file.startswith("IO_network_metrics"):
-            network_metrics_files["IO"] = file_path
-
-        elif file.startswith("Caribbean_network_metrics"):
-            network_metrics_files["Caribbean"] = file_path
+            if "GBR" in root:
+                key = "GBR"
+            elif "Caribbean" in root:
+                key = "Caribbean"
+            elif "IO" in root:
+                key = "IO"
+            else:
+                continue  # Ignore files in unexpected directories
+            
+            network_metrics_files[key] = file_path
 
 # Check if all expected regions are found
-expected_regions = ["IO", "Caribbean"] + [key for key in network_metrics_files if key.startswith("GBR")]
+expected_regions = ["IO", "Caribbean", "GBR"]
 missing_regions = [region for region in expected_regions if region not in network_metrics_files]
 
 if missing_regions:
@@ -177,12 +179,12 @@ for metric in metrics:
         plt.grid()
 
         # Save the plot
-        plt.savefig(f"distribution_{metric}_{region}.png")
-        plt.close()
+        #plt.savefig(f"distribution_{metric}_{region}.png")
+        #plt.close()
 
 # Convert results list into df and save to csv
 normality_df = pd.DataFrame(normality_results)
-normality_df.to_csv(r"normality_test_results.csv")
+#normality_df.to_csv(r"normality_test_results.csv")
 
 
 ############################################
@@ -259,7 +261,7 @@ for metric in comparison_metrics:
 
 # Convert results list into df and save to csv
 ANOVA_KruskallWallis_df = pd.DataFrame(ANOVA_KruskallWallis_results)
-ANOVA_KruskallWallis_df.to_csv(r"ANOVA_KruskallWallis_results.csv", index=False)
+#ANOVA_KruskallWallis_df.to_csv(r"ANOVA_KruskallWallis_results.csv", index=False)
 
 
 ##########################################
