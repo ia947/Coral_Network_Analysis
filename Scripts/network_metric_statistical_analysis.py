@@ -386,23 +386,52 @@ linkage_matrix = linkage(reduced_data, method='ward')
 num_clusters = 3  # Adjust as needed
 cluster_labels = fcluster(linkage_matrix, t=num_clusters, criterion='maxclust')
 
-# Define distinct colors for each cluster
-palette = sns.color_palette("tab10", num_clusters)  # Uses discrete colors
+# Define distinct colours for each cluster
+palette = sns.color_palette("tab10", num_clusters)
 colors = [palette[label - 1] for label in cluster_labels]
+
+# Define distinct markers for each region
+region_markers = {
+    'GBR': '.',
+    'IO': '^',
+    'Caribbean': 'X'
+}
+
+# Extract the base region from the full region name
+df_all['Base_Region'] = df_all['Region'].str.split('_').str[0]
+
+# Add cluster labels to the dataframe
+df_all['Cluster'] = cluster_labels
+
+df_all['PC1'] = reduced_data[:, 0]
+df_all['PC2'] = reduced_data[:, 1]
 
 # Plot the clusters in PCA space
 plt.figure(figsize=(8, 6))
-scatter = plt.scatter(reduced_data[:, 0], reduced_data[:, 1], c=colors, edgecolors='k')
 
-# Create a legend for clusters
-handles = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=palette[i], markersize=8, label=f'Cluster {i+1}') 
-           for i in range(num_clusters)]
-plt.legend(handles=handles, title="Clusters")
+# Loop through unique regions and clusters to plot with correct markers and colours
+for region in df_all["Base_Region"].unique():
+    region_subset = df_all[df_all["Base_Region"] == region]
+    
+    for cluster in range(1, num_clusters + 1):
+        cluster_subset = region_subset[region_subset["Cluster"] == cluster]
+        plt.scatter(
+            cluster_subset["PC1"], cluster_subset["PC2"], 
+            c=[palette[cluster - 1]] * len(cluster_subset), 
+            edgecolors='k', 
+            marker=region_markers.get(region, "o"), # Default "o" if no region
+            s=60, 
+            label=f"{region} (Cluster {cluster})"
+        )
 
-# Labels and title
+# Create a legend
+cluster_legend = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=palette[i], markersize=10, label=f"Cluster {i+1}") for i in range(num_clusters)]
+region_legend = [plt.Line2D([0], [0], marker=marker, color='w', markerfacecolor='black', markersize=10, label=region) for region, marker in region_markers.items()]
+
+plt.legend(handles=cluster_legend + region_legend, loc="best")
+
 plt.xlabel("Principal Component 1")
 plt.ylabel("Principal Component 2")
-plt.title("Hierarchical Clustering in PCA Space")
 plt.show()
 
 # Add cluster labels to the dataframe
