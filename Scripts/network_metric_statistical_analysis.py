@@ -387,7 +387,7 @@ num_clusters = 3  # Adjust as needed
 cluster_labels = fcluster(linkage_matrix, t=num_clusters, criterion='maxclust')
 
 # Define distinct colours for each cluster
-palette = sns.color_palette("tab10", num_clusters)
+palette = sns.color_palette("husl", num_clusters)
 colors = [palette[label - 1] for label in cluster_labels]
 
 # Define distinct markers for each region
