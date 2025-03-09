@@ -308,7 +308,6 @@ pca.fit(scaled_data)
 # Visualise explained variance
 plt.figure(figsize=(10, 6))
 plt.plot(range(1, len(metrics) + 1), pca.explained_variance_ratio_, marker='o', linestyle='--')
-plt.title('PCA Explained Variance')
 plt.xlabel('Principal Component')
 plt.ylabel('Variance Ratio')
 plt.show()
@@ -318,7 +317,6 @@ components = pca.components_
 plt.figure(figsize=(10, 6))
 sns.heatmap(components, cmap='coolwarm', xticklabels=metrics, yticklabels=[f"PC{i+1}" for i in range(len(components))])
 
-plt.title('PCA Loadings')
 plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels to 45 degrees for readability
 plt.yticks(rotation=0)
 plt.tight_layout()
@@ -353,7 +351,6 @@ for k in range(2, 11):  # Check for k from 2 to 10 clusters
 # Plot the elbow curve
 plt.figure(figsize=(8, 6))
 plt.plot(range(2, 11), wcss, marker='o', linestyle='--')
-plt.title('Elbow Method for Optimal Number of Clusters')
 plt.xlabel('Number of Clusters')
 plt.ylabel('WCSS')
 plt.show()
@@ -369,7 +366,6 @@ for k in range(2, 11):  # Check for k from 2 to 10 clusters
 # Plot the silhouette scores
 plt.figure(figsize=(8, 6))
 plt.plot(range(2, 11), sil_scores, marker='o', linestyle='--')
-plt.title('Silhouette Scores for Optimal Number of Clusters')
 plt.xlabel('Number of Clusters')
 plt.ylabel('Silhouette Score')
 plt.show()
@@ -445,14 +441,14 @@ df_all['Cluster'] = cluster_labels
 # Calculate correlation matrix for metrics
 correlation_matrix = df_all[metrics].corr(method='pearson')
 sns.heatmap(correlation_matrix, annot=True, cmap='viridis', linewidths=0.5, vmin=0, vmax=1)
-plt.title('Pearson Correlation Matrix of Network Metrics')
+#plt.title('Pearson Correlation Matrix of Network Metrics')
 plt.xticks(rotation=45, ha='right')
 plt.show()
 
 # For non-parametric correlation (Spearman)
 correlation_matrix_spearman = df_all[metrics].corr(method='spearman')
 sns.heatmap(correlation_matrix_spearman, annot=True, cmap='viridis', linewidths=0.5, vmin=0, vmax=1)
-plt.title('Spearman Correlation Matrix of Network Metrics')
+#plt.title('Spearman Correlation Matrix of Network Metrics')
 plt.xticks(rotation=45, ha='right')
 plt.show()
 
