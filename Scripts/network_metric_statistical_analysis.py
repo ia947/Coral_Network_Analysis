@@ -11,6 +11,7 @@ import numpy as np
 import scipy.stats as stats
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
@@ -485,14 +486,75 @@ region_legend = [plt.Line2D([0], [0], marker=marker, color='w', markerfacecolor=
 
 plt.legend(handles=cluster_legend + region_legend, loc="best")
 
+ax = plt.gca()  # Get the current axis
+for spine in ax.spines.values():
+    spine.set_color("black")
+
 plt.xlabel("Principal Component 1")
 plt.ylabel("Principal Component 2")
+plt.grid(False)
 plt.show()
 
 # Add cluster labels to the dataframe
 df_all['Cluster'] = cluster_labels
 
+df_gbr = df_all[df_all["Region_Combined"] == "GBR"].copy()
 
+if df_gbr.empty:
+    print("No GBR data available.")
+else:
+    # Define distinct markers for each condition (like regions in the full-region plot)
+    condition_markers = {
+        'wind-only': '.',
+        'tides-only': '^',
+        'wind-and-tides': 'X'
+    }
+
+    # Get unique subregions and assign a color using sns.color_palette("husl")
+    subregions = sorted(df_gbr["Subregion"].unique())
+    palette = sns.color_palette("husl", len(subregions))  # Husl for color diversity
+    subregion_colors = dict(zip(subregions, palette))
+
+    plt.figure(figsize=(8, 6))
+
+    # Loop through subregions and conditions to plot correctly
+    for subregion in subregions:
+        subregion_subset = df_gbr[df_gbr["Subregion"] == subregion]
+
+        for condition in df_gbr["Condition"].unique():
+            subset = subregion_subset[subregion_subset["Condition"] == condition]
+            if not subset.empty:
+                plt.scatter(
+                    subset["PC1"],
+                    subset["PC2"],
+                    color=[subregion_colors[subregion]] * len(subset),
+                    marker=condition_markers.get(condition, 'o'),
+                    edgecolors='k',
+                    s=60
+                )
+
+    # Build legend handles:
+    # Legend for subregions (colors)
+    subregion_legend = [Line2D([0], [0], marker='o', color='w', markerfacecolor=col, markersize=10, label=subr) 
+                        for subr, col in subregion_colors.items()]
+
+    # Legend for conditions (marker shapes)
+    condition_legend = [Line2D([0], [0], marker=marker, color='w', markerfacecolor='black',
+                               markeredgecolor='k', markersize=10, label=cond) 
+                        for cond, marker in condition_markers.items()]
+
+    # Combine both legends in one legend box
+    plt.legend(handles=subregion_legend + condition_legend, loc="best")
+    
+    ax = plt.gca()  # Get the current axis
+    for spine in ax.spines.values():
+        spine.set_color("black")
+
+    plt.xlabel("Principal Component 1")
+    plt.ylabel("Principal Component 2")
+    plt.grid(False)
+    plt.show()
+    
 ##########################################
 ###### PEARSON/SPEARMAN CORRELATION ######
 ##########################################
