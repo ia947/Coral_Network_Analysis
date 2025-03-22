@@ -114,106 +114,165 @@ metrics = [
     "Degree Centrality", "Network Centralisation", "Closeness Centrality", "Betweenness Centrality",
     "Eigenvector Centrality", "Harmonic Centrality", "Clustering Coefficient", "Graph Density",
     "Rich Club Coefficient", "Transitivity", "Local Efficiency"
-    ]
+]
 
-# Check if all expected metrics exist
-missing_metrics = [col for col in metrics if col not in df_all.columns]
+# Check all expected metric columns are present
+missing_metrics = [m for m in metrics if m not in df_all.columns]
 if missing_metrics:
     raise ValueError(f"Missing expected columns in dataset: {missing_metrics}")
 
-# Drop rows with missing values
 df_all.dropna(subset=metrics, inplace=True)
 
-normality_results = []
+# Parse Region strings to extract GBR, condition, subregion
+# -> For GBR regions, extract the condition and subregion (e.g., "GBR_wind-only_Cairns" becomes ("GBR", "wind-only", "Cairns"))
+# -> For non-GBR regions, leave the condition and subregion as None
+def parse_gbr_region(region_str):
+    # E.g. "GBR_wind-only_Cairns" -> ("GBR", "wind-only", "Cairns")
+    if region_str.startswith("GBR_"):
+        parts = region_str.split("_", 2)
+        region = "GBR"
+        condition = parts[1] if len(parts) > 1 else None
+        subregion = parts[2] if len(parts) > 2 else None
+        return region, condition, subregion
+    else:
+        return region_str, None, None
 
+# Apply the parsing function to the "Region" column and create three new columns:
+# "Region_Combined", "Condition", and "Subregion"
+df_all["Region_Combined"], df_all["Condition"], df_all["Subregion"] = zip(*df_all["Region"].apply(parse_gbr_region))
+
+# Set up visual style using Seaborn
+sns.set_style("whitegrid")
+sns.set_context("paper", font_scale=1.2)
+
+normality_results = []
+unique_regions = df_all["Region_Combined"].unique()
+
+# Perform normality testing
 for metric in metrics:
     print(f"\nNormality test for {metric}:\n" + "-" * 40)
     
-    for region in dataframes.keys():
-        data = df_all[df_all["Region"] == region][metric].dropna()
-        
+    for region in unique_regions:
+        data = df_all.loc[df_all["Region_Combined"] == region, metric].dropna()
         if len(data) == 0:
-            print(f"Skipping {region} for {metric} due to missing data.")
+            print(f"Skipping {region} for {metric} (no data).")
             continue
 
-        # Convert any non-numeric values to NaN
-        data = pd.to_numeric(data, errors='coerce')
-
-        # Handle dictionary-like strings if present
-        if isinstance(data.iloc[0], str) and data.iloc[0].startswith('{'):
-            data = data.apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
-        
-        # Remove rows with NaN values after conversion
-        data = data.dropna()
-
-        # Skip region-metric combinations with no valid data
+        # Convert to numeric if needed
+        data = pd.to_numeric(data, errors='coerce').dropna()
         if data.empty:
             print(f"Skipping {region} for {metric} (no valid data after conversion).")
             continue
-        
-        # Compute mean and standard deviation
-        mean_value = data.mean()
-        std_dev = data.std()
-        print(f"{region} - {metric}: Mean = {mean_value:.3f}, Std Dev = {std_dev:.3f}")
 
-        # Standardisation
-        std_dev = data.std()
-        if std_dev == 0 or np.isnan(std_dev):
-            print(f"Skipping {region} for {metric} (constant values).")
+        mean_val = data.mean()
+        std_val = data.std()
+        print(f"{region} - {metric}: Mean = {mean_val:.3f}, Std Dev = {std_val:.3f}")
+
+        if std_val == 0 or np.isnan(std_val):
+            print(f"Skipping {region} for {metric} (constant or invalid std).")
             continue
-
-        standardised_data = (data - data.mean()) / std_dev
-
-        # Normality test
+        
+        # Standardize the data (z-score transformation)
+        standardized_data = (data - mean_val) / std_val
+        
+        # Choose the normality test based on sample size:
+        # - Use Kolmogorov-Smirnov for large samples (>500)
+        # - Use Shapiro-Wilk for smaller samples
         if len(data) > 500:
-            stat, p = stats.kstest(standardised_data, 'norm')
+            stat, p_val = stats.kstest(standardized_data, 'norm')
             test_used = "Kolmogorov-Smirnov"
         else:
-            stat, p = stats.shapiro(data)
+            stat, p_val = stats.shapiro(data)
             test_used = "Shapiro-Wilk"
-            
-        # Store results in normality_results list
+
         normality_results.append({
             "Metric": metric,
             "Region": region,
             "Test": test_used,
             "Statistic": stat,
-            "p-value": p,
-            "Normally Distributed": "Yes" if p >= 0.05 else "No",
-            "Mean": mean_value,
-            "Std Dev": std_dev
-            })
+            "p-value": p_val,
+            "Normally Distributed": "Yes" if p_val >= 0.05 else "No",
+            "Mean": mean_val,
+            "Std Dev": std_val
+        })
         
-        print(f"{region}: {test_used} test - W={stat:.3f}, p={p:.3f}")
-        if p < 0.05:
+        print(f"{region}: {test_used} test - Stat={stat:.3f}, p={p_val:.3f}")
+        if p_val < 0.05:
             print(f"    **{metric} is NOT normally distributed** in {region}")
         else:
             print(f"    {metric} is normally distributed in {region}")
-            
-        # Plot the distribution of each metric in each region
-        plt.figure(figsize=(8, 5))
-        sns.histplot(data, kde=True, bins=30, stat="density", label=f"{region} - {metric}")
 
-        # Overlay normal distribution curve
-        xmin, xmax = plt.xlim()
-        x = np.linspace(xmin, xmax, 100)
-        p = stats.norm.pdf(x, mean_value, std_dev)
-        plt.plot(x, p, 'r', label="Normal Distribution")
-
+        # Plot histogram with normal curve
+        plt.figure(figsize=(7, 5))
+        sns.histplot(data, kde=True, bins=30, stat="density", color="skyblue", edgecolor="black")
+        x_min, x_max = plt.xlim()
+        x_vals = np.linspace(x_min, x_max, 200)
+        pdf_vals = stats.norm.pdf(x_vals, mean_val, std_val)
+        plt.plot(x_vals, pdf_vals, "r", label="Normal Dist")
         plt.title(f"Distribution of {metric} in {region}")
         plt.xlabel(metric)
         plt.ylabel("Density")
         plt.legend()
-        plt.grid()
+        plt.tight_layout()
+        plt.show()
 
-        # Save the plot
-        #plt.savefig(f"distribution_{metric}_{region}.png")
-        #plt.close()
-
-# Convert results list into df and save to csv
 normality_df = pd.DataFrame(normality_results)
-#normality_df.to_csv(r"normality_test_results.csv")
+# normality_df.to_csv("normality_results.csv", index=False)  # uncomment if you want to save
 
+# Standardize all metrics
+df_box = df_all.copy()
+for metric in metrics:
+    df_box[metric] = pd.to_numeric(df_box[metric], errors='coerce')
+    mean_metric = df_box[metric].mean()
+    std_metric = df_box[metric].std()
+    df_box[metric] = (df_box[metric] - mean_metric) / std_metric
+
+df_long = df_box.melt(
+    id_vars=["Region_Combined", "Condition", "Subregion"],
+    value_vars=metrics,
+    var_name="Metric",
+    value_name="Standardised Value"
+)
+
+# Boxplot 1: GBR, IO, Caribbean
+regions_of_interest = ["GBR", "IO", "Caribbean"]
+df_long_interest = df_long[df_long["Region_Combined"].isin(regions_of_interest)]
+
+plt.figure(figsize=(8, 6))
+sns.boxplot(
+    x="Region_Combined",
+    y="Standardised Value",
+    data=df_long_interest,
+    palette="Set2",
+    showfliers=True
+)
+plt.xlabel("Region")
+plt.ylabel("Standardised Value")
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# Boxplot 2: GBR only, split by subregion & condition
+df_long_gbr = df_long[df_long["Region_Combined"] == "GBR"].copy()
+
+if not df_long_gbr.empty:
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(
+        x="Subregion",
+        y="Standardised Value",
+        hue="Condition",
+        data=df_long_gbr,
+        palette="Set2",
+        showfliers=True
+    )
+    plt.xlabel("Subregion")
+    plt.ylabel("Standardised Value")
+    plt.legend(title="Condition", loc="upper right")
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+else:
+    print("No GBR data found after standardization. Skipping GBR subregion & condition boxplot.")
 
 ############################################
 ###### ANOVA / KRUSKAL-WALLIS TESTING ######
