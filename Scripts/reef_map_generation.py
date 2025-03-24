@@ -48,3 +48,11 @@ gl.xformatter = LONGITUDE_FORMATTER
 gl.yformatter = LATITUDE_FORMATTER
 gl.xlabel_style = {'size': 12}
 gl.ylabel_style = {'size': 12}
+
+# Plot the Caribbean points from the gdf
+gdf.plot(ax=ax, marker='o', color='red', markersize=50, alpha=0.7, edgecolor='black', transform=proj, label="Caribbean Nodes")
+
+# Add a legend
+#ax.legend(loc="upper right", frameon=True, fontsize=12)
+
+plt.show()
