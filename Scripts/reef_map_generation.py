@@ -12,3 +12,9 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
+# Load Caribbean coordinate data (first column = lat, second column = lon)
+coord_df = pd.read_csv("Caribbean\Caribbean_coord.csv", header=None, names=['lat', 'lon'])
+
+# Convert coord_df into a GeoDataFrame (important for spatial operations)
+gdf = gpd.GeoDataFrame(coord_df, geometry=gpd.points_from_xy(coord_df['lon'], coord_df['lat']), crs="EPSG:4326")
+
