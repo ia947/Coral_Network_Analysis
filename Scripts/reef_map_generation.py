@@ -353,3 +353,70 @@ def plot_bathymetric_profiles():
 
 plot_bathymetric_profiles()
 
+
+####################################################
+###### REGIONAL CURRENT MAPS USING HyCOM DATA ######
+####################################################
+
+def plot_region_currents(region_name, season=''):
+    """Create current-only plots with coloured, larger arrows over a plain background"""
+    # Setup figure and plain-white background
+    fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
+    ax.set_facecolor('white')
+    region = REGIONS[region_name]
+
+    # Load HYCOM dataset without decoding times to avoid calendar errors
+    hycom_url = "https://tds.hycom.org/thredds/dodsC/GLBy0.08/expt_93.0"
+    ds = xr.open_dataset(hycom_url, decode_times=False)
+
+    # Spatial subset
+    ds = ds.sel(lon=slice(region[0], region[1]), lat=slice(region[2], region[3]))
+
+    # Extract u/v, collapse dimensions
+    u_var = ds['water_u']; v_var = ds['water_v']
+    if 'time' in u_var.dims:
+        u_var = u_var.isel(time=0); v_var = v_var.isel(time=0)
+    if 'depth' in u_var.dims:
+        u_var = u_var.isel(depth=0); v_var = v_var.isel(depth=0)
+
+    # Compute speed and subsample
+    stride = 10
+    u = u_var[::stride, ::stride]; v = v_var[::stride, ::stride]
+    speed = np.sqrt(u**2 + v**2)
+
+    # Add coastlines only
+    ax.add_feature(cfeature.COASTLINE.with_scale('10m'), linewidth=0.8)
+    ax.set_extent(region, crs=ccrs.PlateCarree())
+
+    # Plot larger arrows coloured by speed
+    Q = ax.quiver(
+        u.lon, u.lat, u, v, speed,
+        cmap='cividis',      # colourblind-friendly
+        scale=50,             # smaller scale -> larger arrows
+        width=0.005,          # wider arrows
+        headwidth=6,          # larger heads
+        headlength=8,
+        transform=ccrs.PlateCarree(),
+        zorder=3
+    )
+
+    # Colourbar
+    cbar = fig.colorbar(Q, ax=ax, orientation='vertical', shrink=0.8, pad=0.02)
+    cbar.set_label('Current Speed (m/s)', fontsize=12)
+
+    # Quiver key
+    #ax.quiverkey(Q, 0.88, 0.1, 1, '1 m/s', labelpos='E',
+    #             coordinates='axes', fontproperties={'size': 10})
+
+    # Title and gridlines
+    ax.set_title(f'{region_name} Surface Currents – {season}', fontsize=16, pad=12)
+    gl = ax.gridlines(draw_labels=True, linestyle='--', alpha=0.5)
+    gl.top_labels = False; gl.right_labels = False
+
+    return fig
+
+for region, season in zip(["GBR", "IO", "Caribbean"], ["Summer", "Monsoon", "Dry"]):
+    fig = plot_region_currents(region, season)
+    #plt.savefig(f'{region}_currents_only.png', dpi=300, bbox_inches='tight')
+    plt.show()
+    plt.close()
