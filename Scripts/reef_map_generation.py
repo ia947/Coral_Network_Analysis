@@ -192,8 +192,18 @@ def create_gbr_node_map(lat_min=None, lat_max=None, lon_min=None, lon_max=None):
 
 create_gbr_node_map(lat_min=-22, lat_max=-14, lon_min=145, lon_max=152)
 
-###############################################
-###### CREATE BATHYMETRIC MAP OF REGIONS ######
-###############################################
+##################################################################
+###### CREATE BATHYMETRIC MAP OF REGIONS (USING GEBCO DATA) ######
+##################################################################
 
+# Load GEBCO data
+ds = xr.open_dataset('gebco_2024_tid\gebco_2024_sub_ice_topo\GEBCO_2024_sub_ice_topo.nc')
+elevation = ds.elevation
+
+# Define region bounds [lon_min, lon_max, lat_min, lat_max]
+REGIONS = {
+    "GBR": [142, 155, -25, -10],
+    "IO": [35, 85, -30, 10],
+    "Caribbean": [-100, -50, 7.5, 37.5]
+}
 
