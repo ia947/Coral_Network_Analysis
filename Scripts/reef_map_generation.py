@@ -245,7 +245,7 @@ def plot_gbr_features():
     ax.add_feature(cfeature.COASTLINE, linewidth=0.8, zorder=3)
     ax.gridlines(draw_labels=True, linestyle='--', alpha=0.5)
     
-    # Colorbar and labels
+    # Colourbar and labels
     plt.colorbar(im, label='Elevation (m)', ax=ax, shrink=0.6)
     
     return fig
@@ -253,7 +253,7 @@ def plot_gbr_features():
 plot_gbr_features()
 
 def plot_caribbean_features():
-    """Create Caribbean bathymetry"""
+    """Create Caribbean bathymetry map"""
     fig = plt.figure(figsize=(12, 8))
     ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
     
@@ -285,9 +285,38 @@ def plot_caribbean_features():
     ax.add_feature(cfeature.COASTLINE, linewidth=0.8, zorder=3)
     ax.gridlines(draw_labels=True, linestyle='--', alpha=0.5)
     
-    # Colorbar and labels
+    # Colourbar and labels
     plt.colorbar(im, label='Elevation (m)', ax=ax, shrink=0.6)
     
     return fig
 
 plot_caribbean_features()
+
+def plot_io_features():
+    """Create Indian Ocean bathymetry map"""
+    fig = plt.figure(figsize=(12, 8))
+    ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
+    
+    # Data subset
+    io_subset = elevation.sel(lon=slice(35, 85), lat=slice(-30, 10))
+    
+    # Main plot
+    im = io_subset.plot.imshow(
+        ax=ax,
+        cmap=cmap_colombia,
+        vmin=vmin,
+        vmax=vmax,
+        add_colorbar=False
+    )
+    
+    # Map elements
+    ax.add_feature(cfeature.LAND, color='#8B4513', zorder=2)
+    ax.add_feature(cfeature.COASTLINE, linewidth=0.8, zorder=3)
+    ax.gridlines(draw_labels=True, linestyle='--', alpha=0.5)
+    
+    # Colourbar and labels
+    plt.colorbar(im, label='Elevation (m)', ax=ax, shrink=0.6)
+    
+    return fig
+
+plot_io_features()
