@@ -19,6 +19,7 @@ from sklearn.metrics import silhouette_score
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 import plotly.figure_factory as ff
 import ast
+import networkx as nx
 
 
 ############################################
@@ -572,4 +573,98 @@ sns.heatmap(correlation_matrix_spearman, annot=True, cmap='viridis', linewidths=
 #plt.title('Spearman Correlation Matrix of Network Metrics')
 plt.xticks(rotation=45, ha='right')
 plt.show()
+
+
+def plot_connectivity_archetypes():
+    """Create a conceptual diagram of the three connectivity archetypes"""
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+    
+    # Archetype 1: Hub-and-spoke (Caribbean)
+    G1 = nx.DiGraph()
+    G1.add_edges_from([(0,i) for i in range(1,6)] + [(i,0) for i in range(1,6)])  # Central hub
+    G1.add_edges_from([(1,2), (3,4)])  # Some peripheral connections
+    pos1 = nx.spring_layout(G1, seed=42)
+    
+    # Archetype 2: Clustered (GBR)
+    G2 = nx.DiGraph()
+    for cluster in [range(3), range(3,6), range(6,9)]:  # Three clusters
+        G2.add_edges_from([(i,j) for i in cluster for j in cluster if i!=j])
+    G2.add_edges_from([(2,3), (5,6), (8,0)])  # Some inter-cluster connections
+    G2.add_edges_from([(i,i) for i in [1,4,7]])  # Self-loops
+    pos2 = nx.spring_layout(G2, seed=42)
+    
+    # Archetype 3: Mesh (Indian Ocean)
+    G3 = nx.DiGraph()
+    for i in range(10):
+        targets = np.random.choice(10, size=3, replace=False)
+        G3.add_edges_from([(i,j) for j in targets if i!=j])
+    pos3 = nx.spring_layout(G3, seed=42)
+    
+    # Plot settings
+    graphs = [G1, G2, G3]
+    positions = [pos1, pos2, pos3]
+    titles = ["(A) Caribbean Hub-and-Spoke", "(B) GBR Tidal Clusters", "(C) Indian Ocean Mesh"]
+    metrics_text = [
+        "High betweenness centrality\nEigenvector = 0.95",
+        "Clustering = 0.98\nSelf-edges present",
+        "Uniform degree distribution\nTransitivity = 0.76"
+    ]
+    
+    for ax, G, pos, title, text in zip(axes, graphs, positions, titles, metrics_text):
+        # Calculate centrality for coloring
+        centrality = nx.eigenvector_centrality(G)
+        node_colors = list(centrality.values())
+        
+        # Draw with consistent visual style
+        nx.draw_networkx_nodes(
+            G, pos, ax=ax, 
+            node_size=800,
+            node_color=node_colors,
+            cmap='coolwarm',
+            edgecolors='black',
+            linewidths=0.5
+        )
+        
+        # Highlight most central node for hub
+        if title.startswith("(A)"):
+            nx.draw_networkx_nodes(
+                G, pos, nodelist=[0], 
+                ax=ax, node_size=900,
+                node_color='red'
+            )
+        
+        # Draw edges with weights
+        edge_weights = [0.5 + 2*G[u][v].get('weight', 0.3) for u,v in G.edges()]
+        nx.draw_networkx_edges(
+            G, pos, ax=ax,
+            width=edge_weights,
+            edge_color='gray',
+            alpha=0.7,
+            arrows=True,
+            arrowsize=15
+        )
+        
+        # Add self-loops visibly for GBR
+        if title.startswith("(B)"):
+            for node in G.nodes():
+                if G.has_edge(node, node):
+                    nx.draw_networkx_edges(
+                        G, pos, edgelist=[(node,node)],
+                        ax=ax, width=2,
+                        edge_color='blue',
+                        alpha=0.7,
+                        connectionstyle=f"arc3,rad=0.3"
+                    )
+        
+        ax.set_title(title, fontsize=14)
+        ax.text(0.5, -0.1, text, ha='center', transform=ax.transAxes, fontsize=12)
+        ax.axis('off')
+    
+    plt.suptitle("Three Connectivity Archetypes in Coral Reef Networks", y=1.05, fontsize=16)
+    plt.tight_layout()
+    #plt.savefig("connectivity_archetypes.png", dpi=300, bbox_inches='tight')
+    plt.show()
+
+# Add this call right before or after your region processing loop
+plot_connectivity_archetypes()
 

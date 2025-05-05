@@ -13,7 +13,7 @@ import graphviz
 from networkx.drawing.nx_agraph import graphviz_layout
 import matplotlib.pyplot as plt
 import pandas as pd
-from netCDF4 import Dataset
+#from netCDF4 import Dataset
 
 
 #################################
@@ -184,3 +184,114 @@ for region, filename in locations.items():
     compute_network_metrics(G, region)
 
 
+###################################
+###### SIMULATE NODE REMOVAL ######
+###################################
+
+def simulate_node_removal(G, metric='degree', removal_percent=10):
+    """Simulate removal of top X% nodes by centrality metric and compute efficiency loss"""
+    # Calculate centrality with error handling
+    try:
+        if metric == 'degree':
+            scores = nx.degree_centrality(G)
+        elif metric == 'eigenvector':
+            scores = nx.eigenvector_centrality(G, max_iter=1000)
+        elif metric == 'betweenness':
+            scores = nx.betweenness_centrality(G, normalized=True)
+        else:
+            raise ValueError(f"Unsupported metric: {metric}")
+    except Exception as e:
+        print(f"Error calculating {metric} centrality: {str(e)}")
+        return None
+
+    # Identify top nodes
+    nodes = sorted(scores, key=scores.get, reverse=True)
+    if not nodes:
+        print("No nodes available for removal")
+        return None
+    
+    n_remove = max(1, int(len(nodes) * removal_percent / 100))
+    nodes_to_remove = nodes[:n_remove]
+    
+    # Remove nodes and calculate efficiency loss
+    try:
+        G_removed = G.copy()
+        G_removed.remove_nodes_from(nodes_to_remove)
+        original_efficiency = nx.global_efficiency(G.to_undirected())
+        new_efficiency = nx.global_efficiency(G_removed.to_undirected())
+    except Exception as e:
+        print(f"Error during node removal: {str(e)}")
+        return None
+    
+    return {
+        'region': region,
+        'metric': metric,
+        'removal_percent': removal_percent,
+        'efficiency_loss_percent': (1 - new_efficiency/original_efficiency)*100,
+        'nodes_removed': nodes_to_remove,
+        'original_efficiency': original_efficiency,
+        'new_efficiency': new_efficiency,
+        'nodes_removed': nodes_to_remove,
+        'node_impacts': {node: scores[node] for node in nodes_to_remove}
+    }
+
+# Configuration for different regions
+SIMULATION_PARAMS = {
+    "Caribbean": {'metric': 'eigenvector', 'removal_percent': [5, 10, 15]},
+    "IO": {'metric': 'betweenness', 'removal_percent': [5, 10, 15]},
+    "GBR": {'metric': 'degree', 'removal_percent': [5, 10, 15]}
+}
+
+# Modified execution loop with simulations
+results = []
+
+for region, filename in locations.items():
+    print(f"\n{'='*40}\nProcessing {region}\n{'='*40}")
+    
+    # Read and process the adjacency matrix
+    adjacency_matrix = read_adjacency_matrix(filename)
+    G = create_adjacency_matrix_graph(adjacency_matrix)
+    
+    # Compute metrics (optional)
+    metrics_df = compute_network_metrics(G, region)
+    
+    # Determine simulation parameters
+    base_region = region.split('_')[0]
+    params = SIMULATION_PARAMS.get(base_region, {'metric': 'degree', 'removal_percent': [10]})  # Default to list
+    
+    # Iterate over each removal percentage
+    for removal_pct in params['removal_percent']:
+        # Run simulation for this percentage
+        sim_result = simulate_node_removal(
+            G, 
+            metric=params['metric'], 
+            removal_percent=removal_pct  # Pass single integer
+        )
+        
+        if sim_result:
+            # Add metadata
+            sim_result.update({
+                'node_count': len(G.nodes()),
+                'edge_count': len(G.edges()),
+                'subregion': region.split('_')[-1] if 'GBR' in region else None,
+                'condition': '_'.join(region.split('_')[1:-1]) if 'GBR' in region else None
+            })
+            results.append(sim_result)
+            
+            # Print summary
+            print(f"{region} efficiency loss ({params['metric']} @ {removal_pct}%): "
+                  f"{sim_result['efficiency_loss_percent']:.1f}%")
+
+# Convert results to DataFrame and save
+results_df = pd.DataFrame(results)
+results_df.to_csv("node_removal_simulations.csv", index=False)
+print("\nSimulation results saved to node_removal_simulations.csv")
+
+# Generate summary statistics
+if not results_df.empty:
+    print("\nSimulation Summary Statistics:")
+    print(results_df.groupby(['base_region', 'metric']).agg({
+        'efficiency_loss_percent': ['mean', 'std'],
+        'node_count': 'mean',
+        'edge_count': 'mean'
+    }))
