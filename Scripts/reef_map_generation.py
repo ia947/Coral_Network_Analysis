@@ -15,6 +15,8 @@ from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import xarray as xr
 import cmocean
 import numpy as np
+from matplotlib import colors
+from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 
 
 ##################################################
@@ -415,7 +417,7 @@ def plot_region_currents(region_name, season=''):
     #             coordinates='axes', fontproperties={'size': 10})
 
     # Title and gridlines
-    ax.set_title(f'{region_name} Surface Currents – {season}', fontsize=16, pad=12)
+    #ax.set_title(f'{region_name} Surface Currents – {season}', fontsize=16, pad=12)
     gl = ax.gridlines(draw_labels=True, linestyle='--', alpha=0.5)
     gl.top_labels = False; gl.right_labels = False
 
