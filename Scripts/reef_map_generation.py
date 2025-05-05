@@ -8,6 +8,7 @@ Created on Mon Mar 24 12:01:41 2025
 import geopandas as gpd
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
@@ -206,4 +207,48 @@ REGIONS = {
     "IO": [35, 85, -30, 10],
     "Caribbean": [-100, -50, 7.5, 37.5]
 }
+
+# Color normalization parameters
+vmin, vmax = -6000, 0
+colombia_colors = ["#FFD700", "#003893", "#CE1126"]
+cmap_colombia = LinearSegmentedColormap.from_list("colombia", colombia_colors, N=256)
+
+def plot_gbr_features():
+    """Create GBR tidal corridor/bathymetry map"""
+    fig = plt.figure(figsize=(12, 8))
+    ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
+    
+    # Data subset
+    gbr_subset = elevation.sel(lon=slice(142, 155), lat=slice(-25, -10))
+    
+    # Main plot
+    im = gbr_subset.plot.imshow(
+        ax=ax,
+        cmap=cmap_colombia,
+        vmin=vmin,
+        vmax=vmax,
+        add_colorbar=False
+    )
+    
+    # Tidal corridors --> To be adjusted later
+    #corridors = {
+    #    'Hydrographers Passage': ([146, 147.5, 149], [-16.5, -17.5, -18.5]),
+    #    'Pandora Entrance': ([148.5, 150, 151.5], [-18, -19, -20])
+    #}
+    
+    #for name, coords in corridors.items():
+    #    ax.plot(coords[0], coords[1], '--', color='#FFD700', lw=1.5,
+    #            transform=ccrs.PlateCarree(), label=name)
+    
+    # Map elements
+    ax.add_feature(cfeature.LAND, color='#8B4513', zorder=2)
+    ax.add_feature(cfeature.COASTLINE, linewidth=0.8, zorder=3)
+    ax.gridlines(draw_labels=True, linestyle='--', alpha=0.5)
+    
+    # Colorbar and labels
+    plt.colorbar(im, label='Elevation (m)', ax=ax, shrink=0.6)
+    
+    return fig
+
+plot_gbr_features()
 
