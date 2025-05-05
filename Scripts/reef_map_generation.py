@@ -128,6 +128,72 @@ def create_io_node_map():
 
 create_io_node_map()
 
-################################################################################
-###### CREATE BATHYMETRIC MAP OF REGIONS -> TIDAL RANGES AND SHELF WIDTHS ######
-################################################################################
+def create_gbr_node_map(lat_min=None, lat_max=None, lon_min=None, lon_max=None):
+    
+    # Read in the data
+    gbr_df = pd.read_csv(r"GBR/gbr_gauges_utm56.csv")
+
+    # Filter by coordinate bounds if provided
+    if lat_min is not None:
+        gbr_df = gbr_df[gbr_df['Lat'] >= lat_min]
+    if lat_max is not None:
+        gbr_df = gbr_df[gbr_df['Lat'] <= lat_max]
+    if lon_min is not None:
+        gbr_df = gbr_df[gbr_df['Lon'] >= lon_min]
+    if lon_max is not None:
+        gbr_df = gbr_df[gbr_df['Lon'] <= lon_max]
+
+    # Convert filtered df into GeoDataFrame
+    gbr_gdf = gpd.GeoDataFrame(
+        gbr_df,
+        geometry=gpd.points_from_xy(gbr_df['Lon'], gbr_df['Lat']),
+        crs="EPSG:4326"
+    )
+
+    # Set up projection and figure
+    proj = ccrs.PlateCarree()
+    fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': proj})
+
+    # Add map features
+    ax.coastlines(resolution='50m', linewidth=1)
+    ax.add_feature(cfeature.LAND, facecolor='lightgray')
+    ax.add_feature(cfeature.OCEAN, facecolor='lightblue')
+    ax.add_feature(cfeature.BORDERS, linestyle=':', edgecolor='gray')
+
+    # Set extent for GBR region
+    if not gbr_gdf.empty:
+        minx, miny, maxx, maxy = gbr_gdf.total_bounds
+        ax.set_extent([minx-1, maxx+1, miny-1, maxy+1], crs=proj)
+    else:
+        ax.set_extent([140, 155, -26, -8], crs=proj)
+
+    # Gridlines
+    gl = ax.gridlines(
+        draw_labels=True, linestyle="--", linewidth=0.5,
+        color="gray", alpha=0.7
+    )
+    gl.top_labels = False
+    gl.right_labels = False
+    gl.xformatter = LONGITUDE_FORMATTER
+    gl.yformatter = LATITUDE_FORMATTER
+    gl.xlabel_style = {'size': 12}
+    gl.ylabel_style = {'size': 12}
+
+    # Plot the filtered reef nodes
+    gbr_gdf.plot(
+        ax=ax,
+        marker='o', color='red', markersize=50,
+        alpha=0.7, edgecolor='black',
+        transform=proj
+    )
+
+    plt.show()
+    return plt
+
+create_gbr_node_map(lat_min=-22, lat_max=-14, lon_min=145, lon_max=152)
+
+###############################################
+###### CREATE BATHYMETRIC MAP OF REGIONS ######
+###############################################
+
+
