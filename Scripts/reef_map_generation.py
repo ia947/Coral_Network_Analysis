@@ -358,12 +358,18 @@ plot_bathymetric_profiles()
 ###### REGIONAL CURRENT MAPS USING HyCOM DATA ######
 ####################################################
 
+CURRENT_REGIONS = {
+    "GBR": [142, 155, -25, -10],
+    "IO": [35, 85, -30, 10],
+    "Caribbean": [260, 310, 7.5, 37.5]
+}
+
 def plot_region_currents(region_name, season=''):
     """Create current-only plots with coloured, larger arrows over a plain background"""
     # Setup figure and plain-white background
     fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
     ax.set_facecolor('white')
-    region = REGIONS[region_name]
+    region = CURRENT_REGIONS[region_name]
 
     # Load HYCOM dataset without decoding times to avoid calendar errors
     hycom_url = "https://tds.hycom.org/thredds/dodsC/GLBy0.08/expt_93.0"
