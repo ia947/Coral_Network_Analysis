@@ -210,8 +210,8 @@ REGIONS = {
 
 # Color normalization parameters
 vmin, vmax = -6000, 0
-colombia_colors = ["#FFD700", "#003893", "#CE1126"]
-cmap_colombia = LinearSegmentedColormap.from_list("colombia", colombia_colors, N=256)
+colombia_colours = ["#FFD700", "#003893", "#CE1126"]
+cmap_colombia = LinearSegmentedColormap.from_list("colombia", colombia_colours, N=256)
 
 def plot_gbr_features():
     """Create GBR tidal corridor/bathymetry map"""
@@ -252,3 +252,42 @@ def plot_gbr_features():
 
 plot_gbr_features()
 
+def plot_caribbean_features():
+    """Create Caribbean bathymetry"""
+    fig = plt.figure(figsize=(12, 8))
+    ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
+    
+    # Data subset
+    carib_subset = elevation.sel(lon=slice(-100, -50), lat=slice(7.5, 37.5))
+    
+    # Main plot
+    im = carib_subset.plot.imshow(
+        ax=ax,
+        cmap=cmap_colombia,
+        vmin=vmin,
+        vmax=vmax,
+        add_colorbar=False
+    )
+    
+    # Key features --> To be adjusted later
+    #features = {
+    #    'Pedro Bank': {'lon': [-78.5, -78.0, -77.5], 'lat': [16.8, 17.0, 16.8]},
+    #    'Windward Passage': {'lon': [-74.5, -72.0], 'lat': [20.0, 20.0]}
+    #}
+    
+    #colors = {'Pedro Bank': '#CE1126', 'Windward Passage': '#FFD700'}
+    #for name, coords in features.items():
+    #    ax.plot(coords['lon'], coords['lat'], '--', color=colors[name],
+    #            lw=1.5, transform=ccrs.PlateCarree(), label=name)
+    
+    # Map elements
+    ax.add_feature(cfeature.LAND, color='#8B4513', zorder=2)
+    ax.add_feature(cfeature.COASTLINE, linewidth=0.8, zorder=3)
+    ax.gridlines(draw_labels=True, linestyle='--', alpha=0.5)
+    
+    # Colorbar and labels
+    plt.colorbar(im, label='Elevation (m)', ax=ax, shrink=0.6)
+    
+    return fig
+
+plot_caribbean_features()
