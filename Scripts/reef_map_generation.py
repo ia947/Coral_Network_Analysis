@@ -320,3 +320,36 @@ def plot_io_features():
     return fig
 
 plot_io_features()
+
+# Create a bathymetric graph of the major features of each region
+# Windward Passage, Equatorial, and Hydrographer's Passage
+def plot_bathymetric_profiles():
+    """Create bathymetric profiles (Fig 1.4)"""
+    fig, axes = plt.subplots(3, 1, figsize=(12, 15))
+    
+    transect_params = {
+        "GBR": {'lat': -18, 'label': 'Hydrographers Passage Transect'},
+        "IO": {'lat': -5, 'label': 'Equatorial Transect'},
+        "Caribbean": {'lat': 20, 'label': 'Windward Passage Transect'}
+    }
+    
+    for (region, params), ax in zip(transect_params.items(), axes):
+        # First select longitude range
+        lon_slice = elevation.sel(lon=slice(*REGIONS[region][:2]))
+        
+        # Then find nearest latitude point
+        transect = lon_slice.sel(lat=params['lat'], method='nearest')
+        
+        # Plot the transect
+        transect.plot(ax=ax, color='#003893', lw=2)
+        ax.invert_yaxis()
+        ax.set_title(params['label'], fontsize=12)
+        ax.set_ylabel('Depth (m)')
+        ax.set_xlabel('Longitude')
+        ax.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    return fig
+
+plot_bathymetric_profiles()
+
