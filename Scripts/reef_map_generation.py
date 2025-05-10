@@ -131,31 +131,41 @@ def create_io_node_map():
 
 create_io_node_map()
 
-def create_gbr_node_map(lat_min=None, lat_max=None, lon_min=None, lon_max=None):
-    
-    # Read in the data
+def create_gbr_node_map():
+    # Read in  data
     gbr_df = pd.read_csv(r"GBR/gbr_gauges_utm56.csv")
 
-    # Filter by coordinate bounds if provided
-    if lat_min is not None:
-        gbr_df = gbr_df[gbr_df['Lat'] >= lat_min]
-    if lat_max is not None:
-        gbr_df = gbr_df[gbr_df['Lat'] <= lat_max]
-    if lon_min is not None:
-        gbr_df = gbr_df[gbr_df['Lon'] >= lon_min]
-    if lon_max is not None:
-        gbr_df = gbr_df[gbr_df['Lon'] <= lon_max]
+    # Define subregions with their respective bounds
+    regions = {
+        'Grenville': {'lat': (-12, -10), 'lon': (142, 145)},
+        'Cairns': {'lat': (-17, -16), 'lon': (145, 147)},
+        'Swain': {'lat': (-22, -20), 'lon': (149, 153)}
+    }
 
-    # Convert filtered df into GeoDataFrame
+    # Function to assign subregions
+    def get_subregion(row):
+        for region, bounds in regions.items():
+            lat_min, lat_max = bounds['lat']
+            lon_min, lon_max = bounds['lon']
+            if (lat_min <= row['Lat'] <= lat_max) and (lon_min <= row['Lon'] <= lon_max):
+                return region
+        return None
+
+    gbr_df['Subregion'] = gbr_df.apply(get_subregion, axis=1)
+    gbr_df = gbr_df.dropna(subset=['Subregion'])  # Keep only the three subregions
+
+    # Convert to GeoDataFrame
     gbr_gdf = gpd.GeoDataFrame(
         gbr_df,
         geometry=gpd.points_from_xy(gbr_df['Lon'], gbr_df['Lat']),
         crs="EPSG:4326"
     )
 
-    # Set up projection and figure
+    # Set up the plot
     proj = ccrs.PlateCarree()
     fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': proj})
+    ax.text(148.5, -15, "Coral Sea", transform=ccrs.PlateCarree(),
+            fontsize=12, color='gray', alpha=0.7)
 
     # Add map features
     ax.coastlines(resolution='50m', linewidth=1)
@@ -163,37 +173,45 @@ def create_gbr_node_map(lat_min=None, lat_max=None, lon_min=None, lon_max=None):
     ax.add_feature(cfeature.OCEAN, facecolor='lightblue')
     ax.add_feature(cfeature.BORDERS, linestyle=':', edgecolor='gray')
 
-    # Set extent for GBR region
+    # Set dynamic extent based on data
     if not gbr_gdf.empty:
         minx, miny, maxx, maxy = gbr_gdf.total_bounds
         ax.set_extent([minx-1, maxx+1, miny-1, maxy+1], crs=proj)
     else:
         ax.set_extent([140, 155, -26, -8], crs=proj)
 
-    # Gridlines
+    # Configure gridlines
     gl = ax.gridlines(
         draw_labels=True, linestyle="--", linewidth=0.5,
         color="gray", alpha=0.7
     )
-    gl.top_labels = False
-    gl.right_labels = False
+    gl.top_labels = gl.right_labels = False
     gl.xformatter = LONGITUDE_FORMATTER
     gl.yformatter = LATITUDE_FORMATTER
-    gl.xlabel_style = {'size': 12}
-    gl.ylabel_style = {'size': 12}
 
-    # Plot the filtered reef nodes
+    # Define colours for each subregion and plot
+    colors = {'Grenville': 'red', 'Cairns': 'blue', 'Swain': 'green'}
+    gbr_gdf['color'] = gbr_gdf['Subregion'].map(colors)
+
     gbr_gdf.plot(
         ax=ax,
-        marker='o', color='red', markersize=50,
-        alpha=0.7, edgecolor='black',
-        transform=proj
+        marker='o', color=gbr_gdf['color'], markersize=50,
+        alpha=0.7, edgecolor='black', transform=proj
     )
+
+    # Add legend
+    from matplotlib.lines import Line2D
+    legend_elements = [
+        Line2D([0], [0], marker='o', color='w', label=region,
+        markerfacecolor=color, markersize=10
+    ) for region, color in colors.items()]
+    ax.legend(handles=legend_elements, loc='upper right', title='Subregion')
 
     plt.show()
     return plt
 
-create_gbr_node_map(lat_min=-22, lat_max=-14, lon_min=145, lon_max=152)
+# Generate the map
+create_gbr_node_map()
 
 ##################################################################
 ###### CREATE BATHYMETRIC MAP OF REGIONS (USING GEBCO DATA) ######
@@ -221,7 +239,7 @@ def plot_gbr_features():
     ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
     
     # Data subset
-    gbr_subset = elevation.sel(lon=slice(142, 155), lat=slice(-25, -10))
+    gbr_subset = elevation.sel(lon=slice(140, 155), lat=slice(-26, -8))
     
     # Main plot
     im = gbr_subset.plot.imshow(
@@ -245,8 +263,12 @@ def plot_gbr_features():
     # Map elements
     ax.add_feature(cfeature.LAND, color='#8B4513', zorder=2)
     ax.add_feature(cfeature.COASTLINE, linewidth=0.8, zorder=3)
-    ax.gridlines(draw_labels=True, linestyle='--', alpha=0.5)
     
+    # get the Gridliner and turn off the top & right labels
+    gl = ax.gridlines(draw_labels=True, linestyle='--', alpha=0.5)
+    gl.top_labels = False
+    gl.right_labels = False
+        
     # Colourbar and labels
     plt.colorbar(im, label='Elevation (m)', ax=ax, shrink=0.6)
     
