@@ -218,7 +218,9 @@ def simulate_node_removal(G, metric='degree', removal_percent=10):
         G_removed = G.copy()
         G_removed.remove_nodes_from(nodes_to_remove)
         original_efficiency = nx.global_efficiency(G.to_undirected())
+        original_edges = G.number_of_edges()
         new_efficiency = nx.global_efficiency(G_removed.to_undirected())
+        edges_lost = original_edges - G_removed.number_of_edges()
     except Exception as e:
         print(f"Error during node removal: {str(e)}")
         return None
@@ -227,6 +229,7 @@ def simulate_node_removal(G, metric='degree', removal_percent=10):
         'region': region,
         'metric': metric,
         'removal_percent': removal_percent,
+        'edges_lost': edges_lost,
         'efficiency_loss_percent': (1 - new_efficiency/original_efficiency)*100,
         'nodes_removed': nodes_to_remove,
         'original_efficiency': original_efficiency,
