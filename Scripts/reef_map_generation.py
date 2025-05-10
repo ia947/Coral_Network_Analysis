@@ -428,3 +428,44 @@ for region, season in zip(["GBR", "IO", "Caribbean"], ["Summer", "Monsoon", "Dry
     #plt.savefig(f'{region}_currents_only.png', dpi=300, bbox_inches='tight')
     plt.show()
     plt.close()
+
+
+####################################################
+###### CREATE CUSTOM GLOBAL REEF COVERAGE MAP ######
+####################################################
+
+def plot_global_coral_distribution(shp_path, buffer_deg=0.05):
+    # Load  Natural Earth reefs shapefile and reproject to WGS84
+    reefs = gpd.read_file(shp_path).to_crs(epsg=4326)
+
+    # Buffer each polygon to make them visually thicker on a global map
+    reefs['geometry'] = reefs.geometry.buffer(buffer_deg)
+
+    # Create a global PlateCarree map
+    fig, ax = plt.subplots(
+        figsize=(14, 7),
+        subplot_kw={'projection': ccrs.PlateCarree()}
+    )
+    ax.set_global()  # show entire world
+    ax.coastlines(resolution='110m', linewidth=0.5)
+    ax.add_feature(cfeature.LAND, facecolor='lightgray')
+    ax.add_feature(cfeature.OCEAN, facecolor='aliceblue')
+
+    # Plot all reef polygons with thicker edges
+    reefs.plot(
+        ax=ax,
+        facecolor='coral',
+        edgecolor='darkred',
+        linewidth=1.0,      # thicker border
+        alpha=0.6,
+        transform=ccrs.PlateCarree(),
+        zorder=2
+    )
+    
+    plt.tight_layout()
+
+    return fig, ax
+
+shapefile_path = 'ne_10m_reefs/ne_10m_reefs.shp'
+fig, ax = plot_global_coral_distribution(shapefile_path, buffer_deg=0.75)
+plt.show()
