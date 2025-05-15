@@ -44,35 +44,77 @@ Using 'NetworkX', the following metrics are calculated:
 - **Hierarchical Clustering**: Including the **Elbow Method** and **Silhouette Score** on PCA-reduced data to group metrics by their explained variance.
 - **Pearson/Spearman Correlation**: To assess linear/monotonic relationships between all metrics.
 
+### **Other Scripts**:
+- `reef_map_generation.py` is a geospatial mapping toolkit for the contexual bathymetric and ocean currents governing each region. These maps are created using mutliple data layers, including HyCOM currents, GEBCO bathymetry data, and Natural Earth global coral reef coverage.
+- `example_network_graph_plotting.py` is a conceptual network diagram generator. The outputs of this script are very simple edge-node networks for those less familiar with the principles governing network analysis. A basic 2-node network, a self-edge network, and hub-and-spoke versus mesh network are visualised.
+- `pld_phase_plot.py` creates a temporal phase diagram for coral larval development, illustrating the different phases experienced throughout the pelagic larval duration. The parameters for each phase can be changed to reflect the specific phases of different larval species. In this current script, only a general plot is produced, with uncertainty bars to show potential ranges for other species.
+- `IOnetcdf_to_csv.py` quickly handles the Indian Ocean's netCDF file to convert it into a csv, which is more computationally efficient in the full analysis.
+
 ### **Python Libraries Used**
-- **NetworkX** for graph analysis
-- **NumPy** and **Pandas** for data handling
-- **Matplotlib** and **Seaborn** for data visualisation
+#### Core Analysis
+| Library | Purpose | Version |
+|---------|---------|---------|
+| `NetworkX` | Network analysis and metrics | ≥3.0 |
+| `NumPy` | Matrix operations and math | ≥1.23 |
+| `Pandas` | Data manipulation and I/O | ≥2.0 |
+
+#### Visualization
+| Library | Purpose | Version |
+|---------|---------|---------|
+| `Matplotlib` | Base plotting system | ≥3.7 |
+| `Cartopy` | Geospatial mapping | ≥0.21 |
+| `GeoPandas` | Spatial data handling | ≥0.13 |
+| `cmocean` | Oceanographic colormaps | ≥2.0 |
+| `graphviz` | Graph layout algorithms | ≥0.20 |
+
+#### Geospatial Processing
+| Library | Purpose | Version |
+|---------|---------|---------|
+| `xarray` | NetCDF/GRIB data handling | ≥2023.12 |
+| `PyProj` | Coordinate transformations | Built-in Cartopy |
+
+#### Advanced Statistics
+| Library | Purpose | Version |
+|---------|---------|---------|
+| `SciPy` | Statistical tests and math | ≥1.11 |
+| `scikit-learn` | PCA and clustering | ≥1.3 |
+
+#### Utilities
+| Library | Purpose | Version |
+|---------|---------|---------|
+| `tqdm` | Progress bars | (Optional) |
+| `pyogrio` | Fast shapefile I/O | (GeoPandas dependency) |
+
+**Install all requirements:**
+```bash
+conda install -c conda-forge networkx pandas matplotlib cartopy geopandas xarray cmocean scipy scikit-learn graphviz
+pip install pyogrio tqdm
+```
 
 ## **Repository Structure**
 This repository is organised as follows:
 ```plaintext
 Code and Data/  
-│── Caribbean/                 # Data and analysis specific to the Caribbean reefs  
-│── Coral_Network_Analysis/    # Main directory for network analysis scripts  
-│── Data/                      # Raw and processed datasets  
-│── GBR/                       # Data and analysis specific to the Great Barrier Reef  
-│── IO/                        # Data and analysis specific to the Indian Ocean  
-│── Metric Distributions and Statistical Analysis/  # Statistical outputs and metric distributions  
-│── Network Graph Outputs/     # Visualisation outputs for network analysis  
-│── Scripts/                   # Python scripts for analysis  
-│── README.md                  # Project documentation  
+│── Caribbean/
+│── GBR/
+│── IO/
+│── Metric Distributions and Statistical Analysis/
+│── Network Graph Outputs/
+│── Scripts/
+│── LICENCE_CODE.md
+│── LICENCE_DATA.md
+│── README.md
 ```  
 
 ### **Folder Descriptions**  
-- **`Caribbean/`** – Contains data and analysis results for the Caribbean region.  
-- **`Coral_Network_Analysis/`** – Main directory for network analysis scripts and related files.  
-- **`Data/`** – Stores raw and processed datasets used for connectivity analysis.  
+- **`Caribbean/`** – Contains data and analysis results for the Caribbean region. 
 - **`GBR/`** – Contains data and analysis specific to the Great Barrier Reef region.  
 - **`IO/`** – Contains data and analysis specific to the Indian Ocean region.  
 - **`Metric Distributions and Statistical Analysis/`** – Outputs from statistical analysis of network metrics.  
 - **`Network Graph Outputs/`** – Contains visual representations of coral network structures.  
-- **`Scripts/`** – Python scripts for running connectivity analysis and statistical computations.  
+- **`Scripts/`** – Python scripts for running connectivity analysis and statistical computations.
+- **`LICENCE_CODE.md/`** - MIT licence for code.
+- **`LICENCE_DATA.md/`** - CC-BY-SA 4.0 licence for data.
 - **`README.md`** – Project documentation.  
 
 
