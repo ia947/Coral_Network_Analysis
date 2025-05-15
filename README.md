@@ -75,3 +75,8 @@ Code and Data/
 - **`Scripts/`** – Python scripts for running connectivity analysis and statistical computations.  
 - **`README.md`** – Project documentation.  
 
+
+## Licensing
+
+- **Code**: [MIT License](LICENSE_CODE.md)
+- **Data**: [CC-BY-SA 4.0 License](LICENSE_DATA.md)
