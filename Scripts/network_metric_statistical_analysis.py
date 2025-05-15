@@ -376,7 +376,13 @@ plt.show()
 # Biplot
 components = pca.components_
 plt.figure(figsize=(10, 6))
-sns.heatmap(components, cmap='coolwarm', xticklabels=metrics, yticklabels=[f"PC{i+1}" for i in range(len(components))])
+sns.heatmap(
+    components,
+    cmap='coolwarm',
+    center=0,               # tell seaborn to center the colormap at 0
+    xticklabels=metrics,
+    yticklabels=[f"PC{i+1}" for i in range(len(components))]
+)
 
 plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels to 45 degrees for readability
 plt.yticks(rotation=0)
