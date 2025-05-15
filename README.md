@@ -1,11 +1,11 @@
 # Coral Network Analysis
-This repository contains scripts for network analysis of coral reef connectivity, as part of my BSc Environmental Geography dissertation at the University of York.
+This repository contains scripts for network analysis of coral reef connectivity, developed for BSc Environmental Geography dissertation at the University of York.
 
 ## **Overview**
 Coral reef ecosystems are crucial biodiversity hotspots, and their connectivity plays a key role in their resilience and conservation. This study compares network structures of coral reefs in three regions:
-- **Great Barrier Reef (GBR)**
-- **Indian Ocean (IO)**
-- **Caribbean**
+- **Great Barrier Reef (GBR)** - Tidal corridors and wind conditions
+- **Indian Ocean (IO)** - Basin-scale connectivity
+- **Caribbean** - Island hub-and-spoke network structure
 
 By analysing connectivity matrices derived from **biophysical larval dispersal models**, I identify key patterns in reef connectivity and their implications for conservation.
 
