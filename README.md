@@ -45,7 +45,7 @@ Using 'NetworkX', the following metrics are calculated:
 - **Pearson/Spearman Correlation**: To assess linear/monotonic relationships between all metrics.
 
 ### **Other Scripts**:
-- `reef_map_generation.py` is a geospatial mapping toolkit for the contexual bathymetric and ocean currents governing each region. These maps are created using mutliple data layers, including HyCOM currents, GEBCO bathymetry data, and Natural Earth global coral reef coverage.
+- `reef_map_generation.py` is a geospatial mapping toolkit for the contexual bathymetric and ocean currents governing each region. These maps are created using mutliple data layers, including HyCOM currents (https://www.hycom.org/dataserver), GEBCO bathymetry data (https://www.gebco.net/data-products/gridded-bathymetry-data), and Natural Earth global coral reef coverage (ne_10m_reefs).
 - `example_network_graph_plotting.py` is a conceptual network diagram generator. The outputs of this script are very simple edge-node networks for those less familiar with the principles governing network analysis. A basic 2-node network, a self-edge network, and hub-and-spoke versus mesh network are visualised.
 - `pld_phase_plot.py` creates a temporal phase diagram for coral larval development, illustrating the different phases experienced throughout the pelagic larval duration. The parameters for each phase can be changed to reflect the specific phases of different larval species. In this current script, only a general plot is produced, with uncertainty bars to show potential ranges for other species.
 - `IOnetcdf_to_csv.py` quickly handles the Indian Ocean's netCDF file to convert it into a csv, which is more computationally efficient in the full analysis.
